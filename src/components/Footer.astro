@@ -1,0 +1,34 @@
+---
+// src/components/Footer.astro
+---
+<footer id="main-footer">
+    <h2>Ready to feel confident about your coverage?</h2>
+    <a href="/contact" class="footer-button">Get Your Free Quote</a>
+</footer>
+<style>
+    #main-footer {
+        background-color: var(--dark);
+        color: var(--white);
+        text-align: center;
+        padding: 6rem 2rem;
+    }
+    h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        max-width: 700px;
+        margin: 0 auto 2rem auto;
+    }
+    .footer-button {
+        display: inline-block;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--dark);
+        background-color: var(--white);
+        padding: 1rem 2.5rem;
+        text-decoration: none;
+        border-radius: 8px;
+    }
+     @media (max-width: 768px) {
+        h2 { font-size: 2.5rem; }
+    }
+</style>

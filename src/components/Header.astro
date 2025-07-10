@@ -1,0 +1,27 @@
+---
+// src/components/Header.astro
+---
+<header id="main-header">
+    <a href="/" class="logo">[Dad's Business Name]</a>
+    <a href="/contact" class="contact-link">Contact</a>
+</header>
+<style>
+    #main-header {
+        position: absolute; /* Sits on top of the hero */
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10;
+    }
+    .logo, .contact-link {
+        font-weight: 700;
+        color: var(--white);
+        text-decoration: none;
+    }
+    .logo { font-size: 1.5rem; }
+    .contact-link { font-size: 1.1rem; }
+</style>
