@@ -1,45 +1,55 @@
 ---
-// src/components/Hero.astro
+import heroImage from '../assets/hero-background.webp'; // ¡REVISA QUE EL NOMBRE SEA CORRECTO!
 ---
-<section id="hero-section">
+<section id="hero-section" style={`background-image: url(${heroImage.src});`}>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-		<h1 data-aos="fade-up">Insurance that makes sense.</h1>
-		<p data-aos="fade-up" data-aos-delay="200">Finally, straightforward advice from a local expert you can trust.</p>
+        <h1>Seguros sin<br>complicaciones.</h1>
     </div>
 </section>
 
 <style>
     #hero-section {
-        /* This is the key: a full-height, colored block */
-        min-height: 90vh;
-        width: 100%;
-        background-color: var(--accent); /* Our bold color */
-        color: var(--white);
+        position: relative;
+        min-height: 100vh;
+        color: var(--blanco-puro);
         
         display: flex;
-        flex-direction: column;
-        justify-content: flex-end; /* Aligns content to the bottom */
-        padding: 4rem 2rem;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+
+        /* --- ESTILOS CLAVE DEL FONDO (CORREGIDOS) --- */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; /* <-- ESTA ES LA LÍNEA QUE FALTABA */
     }
-    .hero-content {
-        max-width: 1200px;
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        margin: 0 auto;
+        height: 100%;
+        background-color: rgba(17, 17, 17, 0.5);
+        z-index: 1;
     }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
     h1 {
-        font-size: 6rem; /* HUGE text */
-        font-weight: 700;
+        font-size: 7rem;
+        font-weight: 900;
         line-height: 1;
-        margin-bottom: 2rem;
-    }
-    p {
-        font-size: 1.5rem;
-        font-weight: 500;
-        max-width: 600px; /* Constrain the paragraph width */
+        color: var(--blanco-puro);
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     }
 
     @media (max-width: 768px) {
-        h1 { font-size: 3.5rem; }
-        p { font-size: 1.25rem; }
+        h1 { font-size: 4rem; }
     }
 </style>

@@ -1,20 +1,18 @@
 ---
-// src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
+import ContentBlock from '../components/ContentBlock.astro'; // <-- ¡Importamos el nuevo componente!
 import Footer from '../components/Footer.astro';
 ---
 <Layout 
-	title="[Dad's Business Name] - Simple, Honest Insurance" 
-	description="Clear, straightforward insurance advice from a dedicated local agent in [Your Town]."
+	title="[Nombre del Negocio] - Asesoría de Seguros en [Ciudad]" 
+	description="Asesoría honesta y directa de un experto local en quien puedes confiar."
 >
-    <!-- Header sits inside the Hero for this design -->
+    <Header />
 	<main>
 		<Hero />
-        <Header />
-		<About />
+		<ContentBlock />  {/* <-- ¡Y lo usamos aquí! */}
 	</main>
     <Footer />
 </Layout>
