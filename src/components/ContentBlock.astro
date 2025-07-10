@@ -71,16 +71,22 @@ import dadPhoto from '../assets/dad-photo.jpeg';
         display: block; /* Elimina espacio extra debajo de la imagen */
     }
 
+     /* REGLA PARA MÓVILES Y TABLETS PEQUEÑAS */
     @media (max-width: 900px) {
         .content-wrapper {
+            /* Cambiamos el grid de 2 columnas a 1 sola */
             grid-template-columns: 1fr;
         }
         .image-column {
-            grid-row: 1; /* Pone la imagen primero en móvil */
-            margin-bottom: 3rem;
+            /* Ponemos la imagen primero en la vista móvil */
+            grid-row: 1; 
+            margin-bottom: 3rem; /* Añadimos espacio debajo de la imagen */
+        }
+        .text-column {
+            text-align: center; /* Centramos el texto para que se vea mejor */
         }
         .text-column h2 {
-            font-size: 2.5rem;
+            font-size: 2.5rem; /* Ajustamos el tamaño del título */
         }
     }
 </style>
