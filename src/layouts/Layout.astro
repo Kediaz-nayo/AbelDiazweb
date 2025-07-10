@@ -12,9 +12,19 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+		<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 	</head>
 	<body>
 		<slot />
+		<script>
+			document.addEventListener('DOMContentLoaded', (event) => {
+				AOS.init({
+					duration: 800, // animation duration in milliseconds
+					once: true,    // whether animation should happen only once
+				});
+			});
+		</script>
 	</body>
 </html>
 <style is:global>
