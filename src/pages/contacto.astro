@@ -28,7 +28,7 @@ import Layout from '../layouts/Layout.astro';
                 </div>
             </div>
 
-            <form name="contact" method="POST" data-netlify="true" class="contact-form">
+            <form id="contact-form">
                 <input type="hidden" name="form-name" value="contact" />
                 
                 <div class="form-group">
@@ -50,6 +50,66 @@ import Layout from '../layouts/Layout.astro';
             </form>
         </div>
     </main>
+    <script>
+    // 1. Buscamos el formulario en el documento
+    const form = document.getElementById('contact-form');
+
+    // 2. SALVAGUARDA CONTRA NULOS: Si no existe el formulario, detenemos el script para evitar errores.
+    //    También nos aseguramos de que sea un elemento de formulario.
+    if (!form || !(form instanceof HTMLFormElement)) {
+        console.error("No se encontró el formulario con el id 'contact-form'");
+    } else {
+
+        // 3. Buscamos el botón DENTRO del formulario y le decimos a TypeScript que es un BOTÓN.
+        const submitButton = form.querySelector('.submit-button') as HTMLButtonElement;
+
+        // 4. SALVAGUARDA CONTRA NULOS para el botón.
+        if (!submitButton) {
+        console.error("No se encontró el botón con la clase '.submit-button'");
+        } else {
+        
+        // 5. Ahora que TypeScript está seguro de que todo existe, añadimos el evento.
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevenimos que la página se recargue
+
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = 'Enviando...';
+            submitButton.disabled = true; // Ahora TypeScript sabe que .disabled es válido
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+            // Enviamos los datos a nuestra función de Netlify
+            const response = await fetch('/.netlify/functions/submit-form', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                form.reset(); // Limpiamos el formulario
+                submitButton.textContent = '¡Mensaje Enviado!';
+                // Opcional: volver al texto original después de unos segundos
+                setTimeout(() => {
+                    submitButton.textContent = originalButtonText;
+                    submitButton.disabled = false;
+                }, 4000);
+            } else {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            } catch (error) {
+            submitButton.textContent = 'Error. Intenta de nuevo.';
+            submitButton.disabled = false;
+            console.error("Error al enviar el formulario:", error);
+            }
+        });
+        }
+    }
+    </script>
 </Layout>
 
 <style>
