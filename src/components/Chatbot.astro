@@ -275,7 +275,7 @@ let welcomeMessageShown = false;
 //  CONFIGURACIÓN Y CONTEXTO (Sin cambios)
 // ==========================================================
 const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const API_KEY = ''; // <-- ¡REEMPLAZA ESTO!
+const API_KEY = import.meta.env.PUBLIC_GROQ_API_KEY;
 
 const CONTEXT = `
 Eres Botabél, un asistente virtual amigable, profesional y muy servicial.
