@@ -257,26 +257,27 @@
 </style>
 
 
+
 <script>
 // ==========================================================
 //  1. DECLARACIÓN DE VARIABLES CON TIPOS EXPLÍCITOS
 // ==========================================================
 // Le decimos a TypeScript qué tipo de elemento HTML será cada variable.
-// Usamos " | null " porque al principio no tienen valor.
 let chatWindow: HTMLElement | null;
 let chatMessages: HTMLElement | null;
-let chatInput: HTMLInputElement | null; // Es un input, así que usamos el tipo más específico.
-let sendButton: HTMLButtonElement | null; // Es un botón.
+let chatInput: HTMLInputElement | null;
+let sendButton: HTMLButtonElement | null;
 let typingIndicator: HTMLElement | null;
 let isProcessing = false;
 let welcomeMessageShown = false;
 
 // ==========================================================
-//  CONFIGURACIÓN Y CONTEXTO (Sin cambios)
+//  CONFIGURACIÓN Y CONTEXTO
 // ==========================================================
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const API_KEY = import.meta.env.PUBLIC_GROQ_API_KEY;
+// La URL ahora apunta a nuestra propia ruta de API segura.
+const API_URL = '/api/chat'; 
 
+// El contexto se enviará al servidor en cada petición.
 const CONTEXT = `
 Eres Botabél, un asistente virtual amigable, profesional y muy servicial.
 
@@ -301,7 +302,7 @@ REGLAS ESTRICTAS:
 `;
 
 // ==========================================================
-//  LÓGICA PRINCIPAL DEL CHATBOT
+//  LÓGICA DE INICIALIZACIÓN DEL CHATBOT
 // ==========================================================
 
 // Obtenemos los elementos del DOM una sola vez.
@@ -313,13 +314,10 @@ chatInput = document.getElementById('chat-input') as HTMLInputElement;
 sendButton = document.getElementById('send-button') as HTMLButtonElement;
 typingIndicator = document.getElementById('typing-indicator');
 
-// LA SOLUCIÓN MÁS IMPORTANTE: El "Type Guard" o "Verificador de Nulos"
-// Nos aseguramos de que todos los elementos esenciales existan antes de añadir event listeners.
+// Verificador de Nulos: nos aseguramos de que todos los elementos existan.
 if (chatButton && chatWindow && closeButton && sendButton && chatInput && chatMessages && typingIndicator) {
     
-    // Ahora TypeScript sabe que dentro de este bloque, ninguna de estas variables es 'null'.
-    
-    // Event Listeners
+    // Dentro de este bloque, TypeScript sabe que las variables no son 'null'.
     chatButton.addEventListener('click', openChat);
     closeButton.addEventListener('click', closeChat);
     sendButton.addEventListener('click', sendMessage);
@@ -336,7 +334,7 @@ function openChat() {
         showWelcomeMessage();
         welcomeMessageShown = true;
     }
-    chatInput?.focus(); // El "?" es "optional chaining", otra forma de evitar errores de null.
+    chatInput?.focus(); 
 }
 
 function closeChat() {
@@ -395,12 +393,10 @@ function enableInput() {
 }
 
 async function sendMessage() {
-    // Verificamos que los elementos no sean nulos al inicio de la función.
     if (!chatInput || !sendButton || isProcessing) return;
 
     const userMessage = chatInput.value.trim();
     if (!userMessage) return;
-    
     
     addMessage(userMessage, 'user');
     chatInput.value = '';
@@ -409,58 +405,44 @@ async function sendMessage() {
     showTypingIndicator();
     
     try {
-        const response = await callGroqAPI(userMessage);
+        // La llamada ahora va a nuestra propia API, que es segura.
+        const response = await callProxyAPI(userMessage);
         hideTypingIndicator();
         addMessage(response, 'bot');
         
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error al llamar al proxy API:', error);
         hideTypingIndicator();
-        let errorMessage = 'Lo siento, hubo un error. ¿Puedes intentarlo de nuevo?';
-        if (error instanceof Error) {
-            if (error.message.includes('401')) {
-                errorMessage = 'Error: API key inválida. Verifica tu clave de API.';
-            } else if (error.message.includes('429')) {
-                errorMessage = 'Error: Demasiadas solicitudes. Intenta de nuevo en unos minutos.';
-            } else if (error.message.includes('Failed to fetch')) {
-                errorMessage = 'Error: No se pudo conectar con el servidor. Verifica tu conexión a internet.';
-            }
-        }
+        // El mensaje de error ahora viene de nuestro propio servidor.
+        const errorMessage = error instanceof Error ? error.message : 'Lo siento, hubo un error desconocido.';
         addMessage(errorMessage, 'bot');
     }
     
     enableInput();
 }
 
-async function callGroqAPI(userMessage: string): Promise<string> {
-    const messages = [
-        { role: "system", content: CONTEXT },
-        { role: "user", content: userMessage }
-    ];
-    
+// Renombrada para mayor claridad, esta es la función que llama a nuestro servidor.
+async function callProxyAPI(userMessage: string): Promise<string> {
     const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${API_KEY}`,
             'Content-Type': 'application/json'
         },
+        // Enviamos el mensaje del usuario y el contexto a nuestro servidor
         body: JSON.stringify({
-            model: "llama-3.1-8b-instant",
-            messages: messages,
-            temperature: 0.7,
-            max_tokens: 500,
-            top_p: 1,
-            stream: false
+            userMessage: userMessage,
+            context: CONTEXT
         })
     });
     
     if (!response.ok) {
-        const errorBody = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+        const errorText = await response.text();
+        // Lanzamos un error que podemos mostrar al usuario
+        throw new Error(`Error del servidor: ${errorText}`);
     }
     
     const data = await response.json();
-    return data.choices[0].message.content;
+    return data.reply; // Nuestro servidor nos devuelve la respuesta en la propiedad "reply"
 }
 
 </script>
