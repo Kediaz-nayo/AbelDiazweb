@@ -1,0 +1,466 @@
+---
+// La sección del servidor de Astro se queda vacía.
+---
+
+<!-- ============================================= -->
+<!--   1. SECCIÓN DE HTML (Solo lo necesario)      -->
+<!-- ============================================= -->
+
+<!-- Botón flotante del chatbot -->
+<div id="chatbot-button" class="chatbot-button">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12C2 13.54 2.36 14.99 3.01 16.28L2 22L7.72 20.99C9.01 21.64 10.46 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C10.74 20 9.54 19.75 8.5 19.3L8.19 19.14L4.55 20.05L5.46 16.41L5.3 16.1C4.85 15.06 4.6 13.86 4.6 12.6C4.6 7.91 8.31 4.2 13 4.2C17.69 4.2 21.4 7.91 21.4 12.6C21.4 17.29 17.69 21 13 21H12V20Z" fill="white"/>
+    </svg>
+</div>
+
+<!-- Ventana del chatbot -->
+<div id="chatbot-window" class="chatbot-window">
+    <div class="chatbot-header">
+        <h3>Botabél</h3>
+        <button id="close-chat" class="close-button">×</button>
+    </div>
+    <div id="chat-messages" class="chat-messages">
+        <!-- Los mensajes aparecerán aquí -->
+    </div>
+    <div class="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." />
+        <button id="send-button">Enviar</button>
+    </div>
+    <div id="typing-indicator" class="typing-indicator" style="display: none;">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+
+<!-- ============================================= -->
+<!--   2. SECCIÓN DE CSS (Con "is:global")         -->
+<!-- ============================================= -->
+<style is:global>
+    /* El atributo "is:global" es necesario para que estos estilos 
+    afecten a los elementos por su ID, ya que Astro normalmente 
+    aísla los estilos. */
+
+    .chatbot-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #ff6e06 0%, #efff11 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+    .chatbot-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+    }
+    .chatbot-button svg {
+        width: 28px;
+        height: 28px;
+    }
+    .chatbot-window {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        z-index: 1001;
+        overflow: hidden;
+    }
+    .chatbot-window.active {
+        display: flex;
+    }
+    .chatbot-header {
+        background: linear-gradient(135deg, #667eea 0%, #0d34fa 100%);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chatbot-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .close-button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.3s ease;
+    }
+    .close-button:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+    }
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    .chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+    .message {
+        margin-bottom: 15px;
+        animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .message.user {
+        text-align: right;
+    }
+    .message.bot {
+        text-align: left;
+    }
+    .message-content {
+        display: inline-block;
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+    .message.user .message-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    .message.bot .message-content {
+        background: white;
+        color: #333;
+        border: 1px solid #e0e0e0;
+    }
+    .chat-input-container {
+        display: flex;
+        padding: 20px;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+    }
+    #chat-input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+    #chat-input:focus {
+        border-color: #667eea;
+    }
+    #send-button {
+        margin-left: 10px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    #send-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    #send-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    .typing-indicator {
+        padding: 10px 20px;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+    }
+    .typing-indicator span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #667eea;
+        margin-right: 4px;
+        animation: typing 1.4s infinite;
+    }
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    @keyframes typing {
+        0%, 60%, 100% {
+            transform: translateY(0);
+            opacity: 0.4;
+        }
+        30% {
+            transform: translateY(-10px);
+            opacity: 1;
+        }
+    }
+    @media (max-width: 768px) {
+        .chatbot-window {
+            width: 90%;
+            right: 5%;
+            left: 5%;
+            bottom: 90px;
+        }
+        .chatbot-button {
+            bottom: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+        }
+        .chatbot-button svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+</style>
+
+
+<script>
+// ==========================================================
+//  1. DECLARACIÓN DE VARIABLES CON TIPOS EXPLÍCITOS
+// ==========================================================
+// Le decimos a TypeScript qué tipo de elemento HTML será cada variable.
+// Usamos " | null " porque al principio no tienen valor.
+let chatWindow: HTMLElement | null;
+let chatMessages: HTMLElement | null;
+let chatInput: HTMLInputElement | null; // Es un input, así que usamos el tipo más específico.
+let sendButton: HTMLButtonElement | null; // Es un botón.
+let typingIndicator: HTMLElement | null;
+let isProcessing = false;
+let welcomeMessageShown = false;
+
+// ==========================================================
+//  CONFIGURACIÓN Y CONTEXTO (Sin cambios)
+// ==========================================================
+const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const API_KEY = ''; // <-- ¡REEMPLAZA ESTO!
+
+const CONTEXT = `
+Eres Botabél, un asistente virtual amigable, profesional y muy servicial.
+
+INFORMACIÓN IMPORTANTE:
+- Siempre responde en español
+- Tu nombre es Botabél
+- Eres el asistente virtual de Abel Diaz
+- Abel Diaz es un asesor patrimonial y de seguros
+- Abel trabaja en Aguascalientes y Guadalajara
+- Su enfoque es ofrecer claridad y respaldo para tomar las mejores decisiones
+- Se describe como "tu vecino" y "experto local de confianza"
+- Su lema es "Seguros sin complicaciones"
+- Su objetivo es proteger lo que más valoras
+
+REGLAS ESTRICTAS:
+1. SOLO puedes responder preguntas relacionadas con la información proporcionada arriba
+2. Si te preguntan algo que NO esté en esta información, debes responder exactamente: "Lo siento, no tengo información sobre ese tema. ¿Puedo ayudarte en algo más?"
+3. NO inventes información
+4. NO uses conocimiento externo
+5. Mantén un tono amigable y profesional
+6. Si alguien pregunta sobre seguros, asesoría patrimonial, o servicios de Abel, puedes responder basándote en la información proporcionada
+`;
+
+// ==========================================================
+//  LÓGICA PRINCIPAL DEL CHATBOT
+// ==========================================================
+
+// Obtenemos los elementos del DOM una sola vez.
+const chatButton = document.getElementById('chatbot-button');
+const closeButton = document.getElementById('close-chat');
+chatWindow = document.getElementById('chatbot-window');
+chatMessages = document.getElementById('chat-messages');
+chatInput = document.getElementById('chat-input') as HTMLInputElement;
+sendButton = document.getElementById('send-button') as HTMLButtonElement;
+typingIndicator = document.getElementById('typing-indicator');
+
+// LA SOLUCIÓN MÁS IMPORTANTE: El "Type Guard" o "Verificador de Nulos"
+// Nos aseguramos de que todos los elementos esenciales existan antes de añadir event listeners.
+if (chatButton && chatWindow && closeButton && sendButton && chatInput && chatMessages && typingIndicator) {
+    
+    // Ahora TypeScript sabe que dentro de este bloque, ninguna de estas variables es 'null'.
+    
+    // Event Listeners
+    chatButton.addEventListener('click', openChat);
+    closeButton.addEventListener('click', closeChat);
+    sendButton.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', handleKeyPress);
+
+} else {
+    console.error('Error al inicializar el chatbot: No se encontraron todos los elementos necesarios en el DOM.');
+}
+
+function openChat() {
+    if (!chatWindow) return;
+    chatWindow.classList.add('active');
+    if (!welcomeMessageShown) {
+        showWelcomeMessage();
+        welcomeMessageShown = true;
+    }
+    chatInput?.focus(); // El "?" es "optional chaining", otra forma de evitar errores de null.
+}
+
+function closeChat() {
+    if (!chatWindow) return;
+    chatWindow.classList.remove('active');
+}
+
+function handleKeyPress(event: KeyboardEvent) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+}
+
+function showWelcomeMessage() {
+    const welcomeMessage = "¡Hola! Soy Botabél, tu asistente virtual. ¿En qué puedo ayudarte hoy?";
+    addMessage(welcomeMessage, 'bot');
+}
+
+function addMessage(text: string, sender: 'user' | 'bot') {
+    if (!chatMessages) return;
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.textContent = text;
+    
+    messageDiv.appendChild(messageContent);
+    chatMessages.appendChild(messageDiv);
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTypingIndicator() {
+    if (typingIndicator) typingIndicator.style.display = 'flex';
+    if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTypingIndicator() {
+    if (typingIndicator) typingIndicator.style.display = 'none';
+}
+
+function disableInput() {
+    if (chatInput) chatInput.disabled = true;
+    if (sendButton) sendButton.disabled = true;
+    isProcessing = true;
+}
+
+function enableInput() {
+    if (chatInput) chatInput.disabled = false;
+    if (sendButton) sendButton.disabled = false;
+    isProcessing = false;
+    chatInput?.focus();
+}
+
+async function sendMessage() {
+    // Verificamos que los elementos no sean nulos al inicio de la función.
+    if (!chatInput || !sendButton || isProcessing) return;
+
+    const userMessage = chatInput.value.trim();
+    if (!userMessage) return;
+    
+    
+    addMessage(userMessage, 'user');
+    chatInput.value = '';
+    
+    disableInput();
+    showTypingIndicator();
+    
+    try {
+        const response = await callGroqAPI(userMessage);
+        hideTypingIndicator();
+        addMessage(response, 'bot');
+        
+    } catch (error) {
+        console.error('Error:', error);
+        hideTypingIndicator();
+        let errorMessage = 'Lo siento, hubo un error. ¿Puedes intentarlo de nuevo?';
+        if (error instanceof Error) {
+            if (error.message.includes('401')) {
+                errorMessage = 'Error: API key inválida. Verifica tu clave de API.';
+            } else if (error.message.includes('429')) {
+                errorMessage = 'Error: Demasiadas solicitudes. Intenta de nuevo en unos minutos.';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Error: No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+            }
+        }
+        addMessage(errorMessage, 'bot');
+    }
+    
+    enableInput();
+}
+
+async function callGroqAPI(userMessage: string): Promise<string> {
+    const messages = [
+        { role: "system", content: CONTEXT },
+        { role: "user", content: userMessage }
+    ];
+    
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            model: "llama-3.1-8b-instant",
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 500,
+            top_p: 1,
+            stream: false
+        })
+    });
+    
+    if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+    }
+    
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+</script>
