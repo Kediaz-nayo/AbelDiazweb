@@ -258,52 +258,79 @@
 
 
 <script>
-// --- SCRIPT COMPLETO Y CORRECTO PARA LA ARQUITECTURA SEGURA ---
-
-document.addEventListener('astro:page-load', () => {
-
 // ==========================================================
-//  1. DECLARACIÓN DE ELEMENTOS DEL DOM
+//  1. DECLARACIÓN DE VARIABLES CON TIPOS EXPLÍCITOS
 // ==========================================================
-const chatButton = document.getElementById('chatbot-button');
-const closeButton = document.getElementById('close-chat');
-const chatWindow = document.getElementById('chatbot-window');
-const chatMessages = document.getElementById('chat-messages');
-const chatInput = document.getElementById('chat-input') as HTMLInputElement;
-const sendButton = document.getElementById('send-button') as HTMLButtonElement;
-const typingIndicator = document.getElementById('typing-indicator');
-
+// Le decimos a TypeScript qué tipo de elemento HTML será cada variable.
+// Usamos " | null " porque al principio no tienen valor.
+let chatWindow: HTMLElement | null;
+let chatMessages: HTMLElement | null;
+let chatInput: HTMLInputElement | null; // Es un input, así que usamos el tipo más específico.
+let sendButton: HTMLButtonElement | null; // Es un botón.
+let typingIndicator: HTMLElement | null;
 let isProcessing = false;
 let welcomeMessageShown = false;
 
 // ==========================================================
-//  2. CONFIGURACIÓN Y CONTEXTO
+//  CONFIGURACIÓN Y CONTEXTO (Sin cambios)
 // ==========================================================
 const API_URL = '/api/chat'; // <-- ¡APUNTAMOS A NUESTRA API SEGURA!
 
 const CONTEXT = `
 Eres Botabél, un asistente virtual amigable, profesional y muy servicial.
-(Aquí va todo tu contexto de información que ya tienes...)
+
+INFORMACIÓN IMPORTANTE:
+- Siempre responde en español.
+- Tu nombre es Botabél.
+- Eres el asistente virtual de Abel Díaz.
+- Abel Díaz es un asesor patrimonial y de seguros.
+- Abel trabaja principalmente en Aguascalientes y Guadalajara.
+- Su enfoque es ofrecer claridad y respaldo para tomar las mejores decisiones.
+- Se presenta como "tu vecino" y "experto local de confianza".
+- Su lema es: "Seguros sin complicaciones".
+- Su objetivo es proteger lo que más valoras, ayudándote a tener tranquilidad financiera.
+- Ofrece asesoría inicial sin costo ni compromiso.
+- Los servicios que ofrece Abel incluyen:
+  • Gastos Médicos Mayores: Protección ante imprevistos de salud, con acceso a hospitales de primer nivel sin descapitalizarse.
+  • Plan Personal de Retiro: Construye un retiro digno y con beneficios fiscales.
+  • Seguro de Vida: Protección financiera para los seres queridos en caso de ausencia.
+  • Asesoría Patrimonial: Planes financieros personalizados para hacer crecer y proteger el dinero según las metas del cliente.
+- Puedes agendar una cita por WhatsApp o por correo electrónico.
+
+REGLAS ESTRICTAS:
+1. SOLO puedes responder preguntas relacionadas con la información proporcionada arriba.
+2. Si te preguntan algo que NO esté en esta información, debes responder exactamente: "Lo siento, no tengo información sobre ese tema. ¿Puedo ayudarte en algo más?"
+3. NO inventes información.
+4. NO uses conocimiento externo.
+5. Mantén un tono amigable y profesional.
+6. Si alguien pregunta sobre seguros, asesoría patrimonial, o servicios de Abel, puedes responder basándote en la información proporcionada.
 `;
 
+
 // ==========================================================
-//  3. LÓGICA DE INICIALIZACIÓN Y EVENTOS
+//  LÓGICA PRINCIPAL DEL CHATBOT
 // ==========================================================
 
+// Obtenemos los elementos del DOM una sola vez.
+const chatButton = document.getElementById('chatbot-button');
+const closeButton = document.getElementById('close-chat');
+chatWindow = document.getElementById('chatbot-window');
+chatMessages = document.getElementById('chat-messages');
+chatInput = document.getElementById('chat-input') as HTMLInputElement;
+sendButton = document.getElementById('send-button') as HTMLButtonElement;
+typingIndicator = document.getElementById('typing-indicator');
+
+// LA SOLUCIÓN MÁS IMPORTANTE: El "Type Guard" o "Verificador de Nulos"
+// Nos aseguramos de que todos los elementos esenciales existan antes de añadir event listeners.
 if (chatButton && chatWindow && closeButton && sendButton && chatInput && chatMessages && typingIndicator) {
+    
+    // Ahora TypeScript sabe que dentro de este bloque, ninguna de estas variables es 'null'.
+    
+    // Event Listeners
     chatButton.addEventListener('click', openChat);
     closeButton.addEventListener('click', closeChat);
     sendButton.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', handleKeyPress);
-    
-    // El formulario también puede manejar el envío
-    const chatForm = chatInput.closest('form');
-    if(chatForm) {
-        chatForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            sendMessage();
-        });
-    }
 
 } else {
     console.error('Error al inicializar el chatbot: No se encontraron todos los elementos necesarios en el DOM.');
@@ -311,17 +338,17 @@ if (chatButton && chatWindow && closeButton && sendButton && chatInput && chatMe
 
 function openChat() {
     if (!chatWindow) return;
-    chatWindow.classList.add('is-open'); // Usamos la clase correcta
+    chatWindow.classList.add('active');
     if (!welcomeMessageShown) {
         showWelcomeMessage();
         welcomeMessageShown = true;
     }
-    chatInput?.focus(); 
+    chatInput?.focus(); // El "?" es "optional chaining", otra forma de evitar errores de null.
 }
 
 function closeChat() {
     if (!chatWindow) return;
-    chatWindow.classList.remove('is-open'); // Usamos la clase correcta
+    chatWindow.classList.remove('active');
 }
 
 function handleKeyPress(event: KeyboardEvent) {
@@ -332,18 +359,23 @@ function handleKeyPress(event: KeyboardEvent) {
 }
 
 function showWelcomeMessage() {
-    addMessage("¡Hola! Soy Botabél, tu asistente virtual. ¿En qué puedo ayudarte hoy?", 'bot');
+    const welcomeMessage = "¡Hola! Soy Botabél, tu asistente virtual. ¿En qué puedo ayudarte hoy?";
+    addMessage(welcomeMessage, 'bot');
 }
 
 function addMessage(text: string, sender: 'user' | 'bot') {
     if (!chatMessages) return;
+
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}`;
+    
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
     messageContent.textContent = text;
+    
     messageDiv.appendChild(messageContent);
     chatMessages.appendChild(messageDiv);
+    
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
@@ -370,10 +402,12 @@ function enableInput() {
 }
 
 async function sendMessage() {
-    if (!chatInput || !sendButton || isProcessing || !chatInput.value) return;
+    // Verificamos que los elementos no sean nulos al inicio de la función.
+    if (!chatInput || !sendButton || isProcessing) return;
 
     const userMessage = chatInput.value.trim();
     if (!userMessage) return;
+    
     
     addMessage(userMessage, 'user');
     chatInput.value = '';
@@ -382,35 +416,51 @@ async function sendMessage() {
     showTypingIndicator();
     
     try {
-        // Esta es la llamada a nuestro backend seguro
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userMessage: userMessage,
-                context: CONTEXT
-            })
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Error desconocido del servidor');
-        }
-        
-        const data = await response.json();
+        const response = await callProxyAPI(userMessage);
         hideTypingIndicator();
-        addMessage(data.reply, 'bot');
+        addMessage(response, 'bot');
         
     } catch (error) {
-        console.error('Error al llamar a la API:', error);
+        console.error('Error:', error);
         hideTypingIndicator();
-        const errorMessage = error instanceof Error ? error.message : 'Lo siento, hubo un problema de conexión.';
+        let errorMessage = 'Lo siento, hubo un error. ¿Puedes intentarlo de nuevo?';
+        if (error instanceof Error) {
+            if (error.message.includes('401')) {
+                errorMessage = 'Error: API key inválida. Verifica tu clave de API.';
+            } else if (error.message.includes('429')) {
+                errorMessage = 'Error: Demasiadas solicitudes. Intenta de nuevo en unos minutos.';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Error: No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+            }
+        }
         addMessage(errorMessage, 'bot');
     }
     
     enableInput();
 }
-});
+
+// --- ESTA ES LA NUEVA FUNCIÓN ---
+async function callProxyAPI(userMessage: string): Promise<string> {
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        // Enviamos el mensaje del usuario y el contexto a nuestro servidor
+        body: JSON.stringify({
+            userMessage: userMessage,
+            context: CONTEXT
+        })
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        // Lanzamos un error que podemos mostrar al usuario
+        throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.reply; // Nuestro servidor nos devuelve la respuesta en la propiedad "reply"
+}
+
 </script>
