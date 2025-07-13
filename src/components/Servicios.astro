@@ -1,0 +1,120 @@
+---
+// src/components/Servicios.astro
+const servicios = [
+  {
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-shield-heart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.078 7.024" /><path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005 -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128 -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296z" /></svg>`,
+    title: "Gastos Médicos Mayores",
+    description: "Protege tu salud y tu patrimonio ante cualquier imprevisto. Accede a los mejores hospitales sin descapitalizarte."
+  },
+  {
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-plant-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M2 9a10 10 0 1 0 20 0" /><path d="M12 19a10 10 0 0 1 10 -10" /><path d="M2 9a10 10 0 0 1 10 10" /><path d="M12 4a9.7 9.7 0 0 1 2.941 7" /><path d="M9.059 11a9.7 9.7 0 0 1 2.941 -7" /></svg>`,
+    title: "Plan Personal de Retiro",
+    description: "Asegura una jubilación digna y sin preocupaciones. Comienza a construir tu futuro hoy con beneficios fiscales."
+  },
+  {
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-users-group"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 10h2a2 2 0 0 1 2 2v1" /></svg>`,
+    title: "Seguro de Vida",
+    description: "El mayor acto de amor: blinda financieramente a tus seres queridos ante tu ausencia. La certeza en momentos difíciles."
+  },
+  {
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-chart-infographic"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M7 3v4h4" /><path d="M9 17l0 4" /><path d="M17 14l0 7" /><path d="M13 13l0 8" /><path d="M21 12l0 9" /></svg>`,
+    title: "Asesoría Patrimonial",
+    description: "Más que un seguro, una estrategia integral. Analizamos tus metas para crear un plan que haga crecer y proteja tu dinero."
+  }
+];
+---
+<section id="servicios" class="services-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">SOLUCIONES</span>
+            <h2>Tu Futuro, Claro y Seguro</h2>
+            <p>Estos son los pilares con los que construiremos tu tranquilidad financiera. Cada uno diseñado a tu medida.</p>
+        </div>
+        <div class="services-grid">
+            {servicios.map(servicio => (
+                <div class="service-card">
+                    <div class="icon-container" set:html={servicio.icon} />
+                    <h3>{servicio.title}</h3>
+                    <p>{servicio.description}</p>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    .services-section {
+        padding: 6rem 1.5rem;
+        background-color: #f8f9fa; /* Un fondo gris muy claro para separar secciones */
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    .subtitle {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        background-color: #e9ecef;
+        color: #495057;
+        font-size: 0.875rem;
+        font-weight: 700;
+        border-radius: 99px;
+    }
+    .section-header h2 {
+        font-size: 2.75rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+    .section-header p {
+        font-size: 1.125rem;
+        color: #495057;
+        max-width: 650px;
+        margin: 0 auto;
+    }
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    .service-card {
+        background-color: #ffffff;
+        padding: 2.5rem;
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    }
+    .icon-container {
+        display: inline-flex;
+        padding: 1rem;
+        background-color: #0052FF1A; /* Un toque de color de marca */
+        border-radius: 50%;
+        margin-bottom: 1.5rem;
+    }
+    .icon-container svg {
+        width: 32px;
+        height: 32px;
+        color: #0052FF;
+    }
+    .service-card h3 {
+        font-size: 1.375rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+    .service-card p {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #495057;
+    }
+</style>

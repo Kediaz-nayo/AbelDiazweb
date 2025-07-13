@@ -1,37 +1,37 @@
 ---
-import { Image } from 'astro:assets';
-// ¡¡¡ASEGÚRATE DE QUE EL NOMBRE Y EXTENSIÓN DE LA FOTO DE TU PAPÁ SEAN CORRECTOS!!!
-import dadPhoto from '../assets/dad-photo.jpeg';
+// No necesitamos el componente <Image> aquí, usaremos un fondo de CSS
+import dadPhoto from '../assets/dad-photo.jpeg'; // ¡Revisa que el nombre y extensión sean correctos!
 ---
+<!-- La estructura ahora es más simple: dos columnas directas -->
 <section id="content-block-section">
-    <div class="content-wrapper">
-        <div class="text-column">
-            <h2>Tu experto local de confianza.</h2>
-            <p>Hola, soy <strong>Abel Diaz</strong>. Mi enfoque es simple: ofrecerte la claridad y el respaldo que necesitas para tomar las mejores decisiones. Como tu vecino en Aguascalientes y Guadalajara, estoy aquí para proteger lo que más valoras.</p>
-            <a href="/contacto" class="content-button">Hablemos de tus metas</a>
-        </div>
-        <div class="image-column">
-            <div class="image-container">
-                <Image src={dadPhoto} alt={"Foto profesional de " + "[Nombre de tu Papá]"} class="profile-image"/>
-            </div>
-        </div>
+    <div class="text-column">
+        <h2>Tu experto local de confianza.</h2>
+        <p>Hola, soy <strong>[Nombre de tu Papá]</strong>. Mi enfoque es simple: ofrecerte la claridad y el respaldo que necesitas para tomar las mejores decisiones. Como tu vecino en [Ciudad], estoy aquí para proteger lo que más valoras.</p>
+        <a href="/contacto" class="content-button">Hablemos de tus metas</a>
+    </div>
+    
+    <!-- Esta columna ahora es solo para la imagen de fondo -->
+    <div class="image-column" style={`background-image: url(${dadPhoto.src});`}>
+        <!-- Está vacía a propósito -->
     </div>
 </section>
 
 <style>
     #content-block-section {
-        /* ¡El bloque azul! */
-        background-color: var(--azul-vibrante);
-        color: var(--blanco-puro);
-        padding: 8rem 2rem;
-    }
-    .content-wrapper {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        align-items: center;
-        gap: 4rem;
-        max-width: 1200px;
-        margin: 0 auto;
+        /* Creamos 2 columnas: la 1ra (texto) ocupa el 40%, la 2da (imagen) el 60% */
+        grid-template-columns: 45% 55%;
+        min-height: 90vh; /* Hacemos que la sección sea alta para un mayor impacto */
+        background: linear-gradient(#003aab, #0052FF, rgb(148, 148, 253), #f9f8fe); /* El fondo azul se verá detrás del texto */
+    }
+
+    /* --- COLUMNA DE TEXTO --- */
+    .text-column {
+        color: var(--blanco-puro);
+        padding: 4rem; /* Más espacio interno */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centramos el contenido verticalmente */
     }
     .text-column h2 {
         font-size: 3.5rem;
@@ -44,49 +44,47 @@ import dadPhoto from '../assets/dad-photo.jpeg';
         line-height: 1.8;
         margin-bottom: 2.5rem;
         opacity: 0.9;
+        max-width: 500px; /* Limitamos el ancho del texto para que sea legible */
     }
     .content-button {
         display: inline-block;
         font-weight: 700;
         font-size: 1.1rem;
         color: var(--gris-oscuro);
-        background-color: var(--dorado-acento); /* ¡El toque dorado! */
+        background-color: var(--dorado-acento);
         padding: 1rem 2.5rem;
         text-decoration: none;
         border-radius: 8px;
         transition: transform 0.2s ease;
+        align-self: flex-start; /* Alineamos el botón a la izquierda */
     }
     .content-button:hover {
         transform: scale(1.05);
     }
-    .image-container {
-        border-radius: 12px;
-        overflow: hidden;
-        border: 4px solid var(--blanco-puro);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-    }
-    .profile-image {
-        width: 100%;
-        height: auto;
-        display: block; /* Elimina espacio extra debajo de la imagen */
+
+    /* --- COLUMNA DE IMAGEN --- */
+    .image-column {
+        height: 100%; /* La columna de la imagen ocupa toda la altura de la sección */
+        background-size: cover; /* La imagen de fondo cubre todo el espacio */
+        background-position: center; /* Centramos la imagen (puedes ajustarlo a 'top', 'left', etc.) */
+        background-repeat: no-repeat;
     }
 
-     /* REGLA PARA MÓVILES Y TABLETS PEQUEÑAS */
-    @media (max-width: 900px) {
-        .content-wrapper {
-            /* Cambiamos el grid de 2 columnas a 1 sola */
-            grid-template-columns: 1fr;
+    /* --- DISEÑO RESPONSIVO PARA MÓVILES --- */
+    @media (max-width: 992px) { /* Un punto de quiebre más grande para tablets */
+        #content-block-section {
+            /* En móvil, las columnas se apilan: la imagen arriba, el texto abajo */
+            grid-template-columns: 1fr; /* Una sola columna */
         }
         .image-column {
-            /* Ponemos la imagen primero en la vista móvil */
-            grid-row: 1; 
-            margin-bottom: 3rem; /* Añadimos espacio debajo de la imagen */
+            min-height: 400px; /* Le damos una altura mínima a la imagen en móvil */
+            grid-row: 1; /* Hacemos que la imagen aparezca primero */
         }
         .text-column {
-            text-align: center; /* Centramos el texto para que se vea mejor */
+            padding: 3rem 1.5rem; /* Ajustamos el padding para pantallas pequeñas */
         }
         .text-column h2 {
-            font-size: 2.5rem; /* Ajustamos el tamaño del título */
+            font-size: 2.5rem;
         }
     }
 </style>

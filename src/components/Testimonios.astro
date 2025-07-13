@@ -1,0 +1,101 @@
+---
+// src/components/Testimonios.astro
+const testimonios = [
+  {
+    cita: "Entender mi plan de retiro parecía imposible hasta que hablé con Abel. Me quitó un peso de encima y ahora sé que mi futuro está en buenas manos. Su claridad y paciencia no tienen precio.",
+    autor: "Ana L. - Emprendedora",
+  },
+  {
+    cita: "Cuando nació mi hija, asegurar su futuro se volvió mi prioridad. Abel no solo me ofreció un producto, me dio una estrategia completa. Más que un agente, lo siento como un aliado.",
+    autor: "Javier M. - Ingeniero",
+  },
+  {
+    cita: "Nadie quiere pensar en un accidente, pero tener un seguro de gastos médicos mayores con la asesoría de Abel nos dio una tranquilidad inmensa. Cuando lo necesitamos, todo funcionó sin problemas.",
+    autor: "Familia Ramírez",
+  }
+]
+---
+<section id="testimonios" class="testimonials-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">CONFIANZA</span>
+            <h2>Historias Reales, Resultados Reales</h2>
+            <p>La tranquilidad de mis clientes es mi mayor satisfacción.</p>
+        </div>
+        <div class="testimonials-grid">
+            {testimonios.map(testimonio => (
+                <div class="testimonial-card">
+                    <p class="quote">“{testimonio.cita}”</p>
+                    <p class="author">— {testimonio.autor}</p>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    .testimonials-section {
+        padding: 6rem 1.5rem;
+        background-color: #ffffff;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    .subtitle {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        background-color: #e9ecef;
+        color: #495057;
+        font-size: 0.875rem;
+        font-weight: 700;
+        border-radius: 99px;
+    }
+    .section-header h2 {
+        font-size: 2.75rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+    .section-header p {
+        font-size: 1.125rem;
+        color: #495057;
+        max-width: 650px;
+        margin: 0 auto;
+    }
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+    .testimonial-card {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 2.5rem;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .quote {
+        font-size: 1.125rem;
+        line-height: 1.7;
+        font-style: italic;
+        color: #343a40;
+        flex-grow: 1;
+        margin: 0 0 1.5rem 0;
+    }
+    .author {
+        font-weight: 700;
+        color: #0052FF;
+        text-align: right;
+        margin: 0;
+    }
+</style>```
+
+

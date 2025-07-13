@@ -4,6 +4,9 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import ContentBlock from '../components/ContentBlock.astro'; // <-- ¡Importamos el nuevo componente!
 import Footer from '../components/Footer.astro';
+import Testimonios from '../components/Testimonios.astro';
+import Servicios from '../components/Servicios.astro';
+import Contacto from '../components/Contacto.astro';
 ---
 <Layout 
 	title="Asesoria patrimonial y seguros - AGS y GDL" 
@@ -13,6 +16,9 @@ import Footer from '../components/Footer.astro';
 	<main>
 		<Hero />
 		<ContentBlock />  {/* <-- ¡Y lo usamos aquí! */}
+		<Servicios />
+		<Testimonios />
+		<Contacto />
 	</main>
     <Footer />
 </Layout>

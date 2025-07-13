@@ -1,8 +1,12 @@
 ---
-import heroImage from '../assets/hero-background.webp'; // ¡REVISA QUE EL NOMBRE SEA CORRECTO!
+// Asegúrate de cambiar 'nueva-imagen-hero.webp' por el nombre de tu nueva imagen
+import heroImage from '../assets/nueva-imagen-hero.png'; 
 ---
+<!-- 1. Aplicamos la transformación a la sección principal -->
 <section id="hero-section" style={`background-image: url(${heroImage.src});`}>
     <div class="hero-overlay"></div>
+
+    <!-- 2. "Des-invertimos" el contenido para que se lea correctamente -->
     <div class="hero-content">
         <h1>Seguros sin<br>complicaciones.</h1>
     </div>
@@ -20,10 +24,12 @@ import heroImage from '../assets/hero-background.webp'; // ¡REVISA QUE EL NOMBR
         text-align: center;
         padding: 2rem;
 
-        /* --- ESTILOS CLAVE DEL FONDO (CORREGIDOS) --- */
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat; /* <-- ESTA ES LA LÍNEA QUE FALTABA */
+        background-repeat: no-repeat;
+
+        /* --- LA MAGIA DEL EFECTO ESPEJO --- */
+        transform: scaleX(-1);
     }
 
     .hero-overlay {
@@ -39,6 +45,10 @@ import heroImage from '../assets/hero-background.webp'; // ¡REVISA QUE EL NOMBR
     .hero-content {
         position: relative;
         z-index: 2;
+
+        /* --- CORRECCIÓN PARA LEER EL TEXTO --- */
+        /* Volvemos a invertir el contenido para que no se vea al revés */
+        transform: scaleX(-1);
     }
 
     h1 {
@@ -50,6 +60,6 @@ import heroImage from '../assets/hero-background.webp'; // ¡REVISA QUE EL NOMBR
     }
 
     @media (max-width: 768px) {
-        h1 { font-size: 3.5rem; }
+        h1 { font-size: 4rem; }
     }
 </style>
