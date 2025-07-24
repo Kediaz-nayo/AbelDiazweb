@@ -12,6 +12,10 @@
         <path d="M12 2C6.48 2 2 6.48 2 12C2 13.54 2.36 14.99 3.01 16.28L2 22L7.72 20.99C9.01 21.64 10.46 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C10.74 20 9.54 19.75 8.5 19.3L8.19 19.14L4.55 20.05L5.46 16.41L5.3 16.1C4.85 15.06 4.6 13.86 4.6 12.6C4.6 7.91 8.31 4.2 13 4.2C17.69 4.2 21.4 7.91 21.4 12.6C21.4 17.29 17.69 21 13 21H12V20Z" fill="white"/>
     </svg>
 </div>
+<!-- Bulle de bienvenue du chatbot -->
+<div id="chatbot-welcome-bubble" class="chatbot-welcome-bubble">
+    ¡Hola! ¿Necesitas ayuda? 👋
+</div>
 
 <!-- Ventana del chatbot -->
 <div id="chatbot-window" class="chatbot-window">
@@ -254,6 +258,35 @@
             height: 24px;
         }
     }
+    /* Bulle de bienvenue du chatbot */
+    .chatbot-welcome-bubble {
+        position: fixed;
+        bottom: 90px;
+        right: 30px;
+        background: white;
+        color: #333;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        padding: 12px 18px;
+        font-size: 15px;
+        z-index: 1100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s;
+        border: 1px solid #e0e0e0;
+        max-width: 240px;
+        text-align: left;
+        animation: chatbot-bubble-in 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes chatbot-bubble-in {
+        0% { transform: translateY(20px) scale(0.9); opacity: 0; }
+        80% { transform: translateY(-5px) scale(1.05); opacity: 1; }
+        100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .chatbot-welcome-bubble.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
 </style>
 
 
@@ -461,6 +494,22 @@ async function callProxyAPI(userMessage: string): Promise<string> {
     
     const data = await response.json();
     return data.reply; // Nuestro servidor nos devuelve la respuesta en la propiedad "reply"
+}
+
+// Affichage de la bulle de bienvenue au chargement de la page
+const welcomeBubble = document.getElementById('chatbot-welcome-bubble');
+if (welcomeBubble) {
+    setTimeout(() => {
+        welcomeBubble.classList.add('visible');
+        // Masquer après 5 secondes
+        setTimeout(() => {
+            welcomeBubble.classList.remove('visible');
+        }, 5000);
+    }, 800); // petit délai pour l'effet
+    // Masquer si l'utilisateur clique sur le bouton du chatbot
+    chatButton?.addEventListener('click', () => {
+        welcomeBubble.classList.remove('visible');
+    });
 }
 
 </script>

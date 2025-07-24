@@ -8,8 +8,9 @@ import heroImage from '../assets/nueva-imagen-hero.png';
 
     <!-- 2. "Des-invertimos" el contenido para que se lea correctamente -->
     <div class="hero-content">
-        <h1>Seguros sin<br>complicaciones.</h1>
-    </div>
+        <h1>Protege lo que amas</h1>
+        <br>
+        <h2>Soluciones claras, humanas y a tu medida.</h2>
 </section>
 
 <style>
@@ -61,5 +62,15 @@ import heroImage from '../assets/nueva-imagen-hero.png';
 
     @media (max-width: 768px) {
         h1 { font-size: 4rem; }
+    }
+
+    .nombre-hero {
+        position: absolute;
+        bottom: 2rem; /* ou 0, selon l’espace désiré */
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 2.5rem; /* ajuste la taille si besoin */
+        color: var(--blanco-puro); /* ou la couleur de ton choix */
     }
 </style>
