@@ -117,4 +117,25 @@ const servicios = [
         line-height: 1.6;
         color: #495057;
     }
+
+    /* ========== MOBILE MEDIA QUERY (max-width: 768px) ========== */
+    @media (max-width: 768px) {
+        .services-grid {
+            grid-template-columns: 1fr; /* une colonne sur mobile */
+        }
+
+        .service-card {
+            padding: 2rem; /* un peu moins de padding sur mobile */
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .section-header p {
+            font-size: 1rem;
+        }
+
+        /* Ajoute d'autres règles responsives ici */
+    }
 </style>

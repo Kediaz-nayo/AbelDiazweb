@@ -2,11 +2,11 @@
 // Asegúrate de cambiar 'nueva-imagen-hero.webp' por el nombre de tu nueva imagen
 import heroImage from '../assets/nueva-imagen-hero.png'; 
 ---
-<!-- 1. Aplicamos la transformación a la sección principal -->
-<section id="hero-section" style={`background-image: url(${heroImage.src});`}>
+<!-- Se pasa la imagen como variable CSS para usarla en un pseudo-elemento y aislar el efecto espejo -->
+<section id="hero-section" style={`--bg-image: url(${heroImage.src});`}>
     <div class="hero-overlay"></div>
 
-    <!-- 2. "Des-invertimos" el contenido para que se lea correctamente -->
+    <!-- El contenido ya no necesita ser "des-invertido" -->
     <div class="hero-content">
         <h1>Protege lo que amas</h1>
         <br>
@@ -14,9 +14,15 @@ import heroImage from '../assets/nueva-imagen-hero.png';
 </section>
 
 <style>
+    html, body {
+        overflow-x: hidden;
+        width: 100vw;
+        max-width: 100vw;
+    }
+
     #hero-section {
         position: relative;
-        min-height: 100vh;
+        min-height: 100vh;  
         color: var(--blanco-puro);
         
         display: flex;
@@ -24,32 +30,32 @@ import heroImage from '../assets/nueva-imagen-hero.png';
         justify-content: center;
         text-align: center;
         padding: 2rem;
+        isolation: isolate; /* Para un contexto de apilamiento limpio con z-index */
+    }
 
+    /* Se usa un pseudo-elemento para el fondo para aplicar el efecto espejo de forma aislada */
+    #hero-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background-image: var(--bg-image);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-
-        /* --- LA MAGIA DEL EFECTO ESPEJO --- */
-        transform: scaleX(-1);
+        transform: scaleX(-1); /* El efecto espejo se aplica solo aquí */
     }
 
     .hero-overlay {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        inset: 0;
         background-color: rgba(17, 17, 17, 0.5);
-        z-index: 1;
+        z-index: -1;
     }
 
     .hero-content {
         position: relative;
-        z-index: 2;
-
-        /* --- CORRECCIÓN PARA LEER EL TEXTO --- */
-        /* Volvemos a invertir el contenido para que no se vea al revés */
-        transform: scaleX(-1);
+        /* Ya no necesita z-index ni transform inverso */
     }
 
     h1 {
@@ -62,6 +68,12 @@ import heroImage from '../assets/nueva-imagen-hero.png';
 
     @media (max-width: 768px) {
         h1 { font-size: 4rem; }
+
+        /* Décale l’image vers la droite : 70 % = un peu plus que le centre */
+        #hero-section::before {
+            background-position: 30% center;      /* 50 % = centre, 0 % = gauche, 100 % = droite */
+            background-size: cover;
+        }
     }
 
     .nombre-hero {

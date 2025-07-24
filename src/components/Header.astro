@@ -3,7 +3,6 @@ const nombreNegocio = '<strong>Abel Díaz</strong><br /><em>Asesoría patrimonia
 ---
 <header>
     <a href="/" class="logo" set:html={nombreNegocio}></a>
-    <a href="/contacto" class="contact-link">Hablemos</a>
 </header>
 <style>
     header {
@@ -24,5 +23,19 @@ const nombreNegocio = '<strong>Abel Díaz</strong><br /><em>Asesoría patrimonia
         font-style: italic !important;
         font-family: Georgia, 'Times New Roman', Times, serif !important;
         font-weight: 400 !important;
+    }
+    /* ==================== MOBILE MEDIA QUERY ==================== */
+    @media (max-width: 768px) {
+        /* Exemple : ajuster le padding du header */
+        header {
+            padding: 1.5rem; /* modifie à ton goût */
+        }
+
+        /* Exemple : réduire la taille du logo */
+        .logo {
+            font-size: 1.3rem; /* modifie à ton goût */
+        }
+
+        /* Place d'autres règles ici */
     }
 </style>

@@ -96,6 +96,27 @@ const testimonios = [
         text-align: right;
         margin: 0;
     }
-</style>```
+
+    /* ========== MOBILE MEDIA QUERY (max-width: 768px) ========== */
+    @media (max-width: 768px) {
+        .testimonials-grid {
+            grid-template-columns: 1fr; /* une seule colonne sur mobile */
+        }
+
+        .quote {
+            font-size: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .section-header p {
+            font-size: 1rem;
+        }
+
+        /* Ajoute d'autres règles responsives ici */
+    }
+</style>
 
 
