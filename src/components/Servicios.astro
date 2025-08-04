@@ -25,14 +25,14 @@ const servicios = [
 ---
 <section id="servicios" class="services-section">
     <div class="container">
-        <div class="section-header">
+        <div class="section-header animate-on-scroll">
             <span class="subtitle">SOLUCIONES</span>
             <h2>Tu Futuro, Claro y Seguro</h2>
             <p>Estos son los pilares con los que construiremos tu tranquilidad financiera. Cada uno diseñado a tu medida.</p>
         </div>
         <div class="services-grid">
-            {servicios.map(servicio => (
-                <div class="service-card">
+            {servicios.map((servicio, index) => (
+                <div class="service-card animate-on-scroll" data-delay={index * 0.2}>
                     <div class="icon-container" set:html={servicio.icon} />
                     <h3>{servicio.title}</h3>
                     <p>{servicio.description}</p>
@@ -45,7 +45,7 @@ const servicios = [
 <style>
     .services-section {
         padding: 6rem 1.5rem;
-        background-color: #f8f9fa; /* Un fondo gris muy claro para separar secciones */
+        background-color: #f8f9fa;
     }
     .container {
         max-width: 1200px;
@@ -89,6 +89,12 @@ const servicios = [
         border: 1px solid #dee2e6;
         text-align: center;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    .service-card.animate-in {
+        opacity: 1;
+        transform: translateY(0);
     }
     .service-card:hover {
         transform: translateY(-8px);
@@ -97,9 +103,37 @@ const servicios = [
     .icon-container {
         display: inline-flex;
         padding: 1rem;
-        background-color: #0052FF1A; /* Un toque de color de marca */
+        background-color: #0052FF1A;
         border-radius: 50%;
         margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    
+    /* Mobile specific icon container */
+    @media (max-width: 768px) {
+        .icon-container {
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .service-card {
+            padding-top: 1.2rem;
+        }
+        
+        .service-card h3 {
+            margin-top: -0.6rem;
+        }
+    }
+    .service-card:hover .icon-container {
+        transform: scale(1.1);
+        background-color: #0052FF2A;
     }
     .icon-container svg {
         width: 32px;
@@ -121,11 +155,33 @@ const servicios = [
     /* ========== MOBILE MEDIA QUERY (max-width: 768px) ========== */
     @media (max-width: 768px) {
         .services-grid {
-            grid-template-columns: 1fr; /* une colonne sur mobile */
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            -webkit-overflow-scrolling: touch;
         }
-
+        
         .service-card {
-            padding: 2rem; /* un peu moins de padding sur mobile */
+            min-width: 270px;
+            max-width: 270px;
+            min-height: 320px;
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            padding: 2.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .service-card h3 {
+            font-size: 1.3rem;
+        }
+        
+        .service-card p {
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
         .section-header h2 {
@@ -135,7 +191,35 @@ const servicios = [
         .section-header p {
             font-size: 1rem;
         }
-
-        /* Ajoute d'autres règles responsives ici */
     }
 </style>
+
+<script>
+    // Animation d'entrée au scroll
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target as HTMLElement;
+                    const delay = parseInt(element.dataset.delay || '0');
+                    
+                    setTimeout(() => {
+                        element.classList.add('animate-in');
+                    }, delay * 1000);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        elements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+    
+    // Initialiser les animations
+    document.addEventListener('DOMContentLoaded', animateOnScroll);
+</script>

@@ -8,9 +8,15 @@ import heroImage from '../assets/nueva-imagen-hero.png';
 
     <!-- El contenido ya no necesita ser "des-invertido" -->
     <div class="hero-content">
-        <h1>Protege lo que amas</h1>
+        <h1 class="hero-title animate-on-scroll">Protege lo que amas</h1>
         <br>
-        <h2>Soluciones claras, humanas y a tu medida.</h2>
+        <h2 class="hero-subtitle animate-on-scroll" data-delay="0.3">Soluciones claras, humanas y a tu medida.</h2>
+    </div>
+    
+    <!-- Indicateur de scroll animé -->
+    <div class="scroll-indicator animate-on-scroll" data-delay="1">
+        <div class="scroll-arrow"></div>
+    </div>
 </section>
 
 <style>
@@ -30,7 +36,7 @@ import heroImage from '../assets/nueva-imagen-hero.png';
         justify-content: center;
         text-align: center;
         padding: 2rem;
-        isolation: isolate; /* Para un contexto de apilamiento limpio con z-index */
+        isolation: isolate;
     }
 
     /* Se usa un pseudo-elemento para el fondo para aplicar el efecto espejo de forma aislada */
@@ -43,7 +49,13 @@ import heroImage from '../assets/nueva-imagen-hero.png';
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        transform: scaleX(-1); /* El efecto espejo se aplica solo aquí */
+        transform: scaleX(-1);
+        animation: hero-zoom 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes hero-zoom {
+        0% { transform: scaleX(-1) scale(1); }
+        100% { transform: scaleX(-1) scale(1.05); }
     }
 
     .hero-overlay {
@@ -55,34 +67,141 @@ import heroImage from '../assets/nueva-imagen-hero.png';
 
     .hero-content {
         position: relative;
-        /* Ya no necesita z-index ni transform inverso */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
     }
 
-    h1 {
+    .hero-title {
         font-size: 7rem;
         font-weight: 900;
         line-height: 1;
         color: var(--blanco-puro);
         text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s ease;
+    }
+
+    .hero-title.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: var(--blanco-puro);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+    }
+
+    .hero-subtitle.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: all 0.8s ease;
+    }
+
+    .scroll-indicator.animate-in {
+        opacity: 1;
+    }
+
+    .scroll-arrow {
+        width: 2px;
+        height: 30px;
+        background-color: white;
+        position: relative;
+        animation: scroll-bounce 2s infinite;
+    }
+
+    .scroll-arrow::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid white;
+    }
+
+    @keyframes scroll-bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-10px);
+        }
+        60% {
+            transform: translateY(-5px);
+        }
     }
 
     @media (max-width: 768px) {
-        h1 { font-size: 4rem; }
+        .hero-title { 
+            font-size: 4rem; 
+        }
 
-        /* Décale l’image vers la droite : 70 % = un peu plus que le centre */
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
         #hero-section::before {
-            background-position: 30% center;      /* 50 % = centre, 0 % = gauche, 100 % = droite */
+            background-position: 30% center;
             background-size: cover;
         }
     }
 
     .nombre-hero {
         position: absolute;
-        bottom: 2rem; /* ou 0, selon l’espace désiré */
+        bottom: 2rem;
         left: 0;
         width: 100%;
         text-align: center;
-        font-size: 2.5rem; /* ajuste la taille si besoin */
-        color: var(--blanco-puro); /* ou la couleur de ton choix */
+        font-size: 2.5rem;
+        color: var(--blanco-puro);
     }
 </style>
+
+<script>
+    // Animation d'entrée au scroll
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target as HTMLElement;
+                    const delay = parseInt(element.dataset.delay || '0');
+                    
+                    setTimeout(() => {
+                        element.classList.add('animate-in');
+                    }, delay * 1000);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        elements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+    
+    // Initialiser les animations
+    document.addEventListener('DOMContentLoaded', animateOnScroll);
+</script>

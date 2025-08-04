@@ -5,13 +5,13 @@ import dadPhoto from '../assets/dad-photo.jpg'; // ¡Revisa que el nombre y exte
 <!-- La estructura ahora es más simple: dos columnas directas -->
 <section id="content-block-section">
     <div class="text-column">
-        <h2>Tu experto local de confianza.</h2>
-        <p>Hola, soy <strong>Abel Diaz</strong>. Mi enfoque es simple: ofrecerte la claridad y el respaldo que necesitas para tomar las mejores decisiones. Como tu vecino en [Ciudad], estoy aquí para proteger lo que más valoras.</p>
-        <a href="/contacto" class="content-button">Hablemos de tus metas</a>
+        <h2 class="animate-on-scroll">Tu experto local de confianza.</h2>
+        <p class="animate-on-scroll" data-delay="0.2">Hola, soy <strong>Abel Diaz</strong>. Mi enfoque es simple: ofrecerte la claridad y el respaldo que necesitas para tomar las mejores decisiones. Como tu vecino en [Ciudad], estoy aquí para proteger lo que más valoras.</p>
+        <a href="/contacto" class="content-button animate-on-scroll" data-delay="0.4">Hablemos de tus metas</a>
     </div>
     
     <!-- Esta columna ahora es solo para la imagen de fondo -->
-    <div class="image-column" style={`background-image: url(${dadPhoto.src});`}>
+    <div class="image-column animate-on-scroll" data-delay="0.3" style={`background-image: url(${dadPhoto.src});`}>
         <!-- Está vacía a propósito -->
     </div>
 </section>
@@ -23,28 +23,44 @@ import dadPhoto from '../assets/dad-photo.jpg'; // ¡Revisa que el nombre y exte
         grid-template-columns: 45% 55%;
         min-height: 90vh; /* Hacemos que la sección sea alta para un mayor impacto */
         background: linear-gradient(#003aab, #0052FF, rgb(91, 91, 230), #f9f8fe); /* El fondo azul se verá detrás del texto */
+        overflow: hidden;
+        position: relative;
     }
 
     /* --- COLUMNA DE TEXTO --- */
     .text-column {
-        color: black;
+        color: rgb(255, 255, 255);
         padding: 4rem; /* Más espacio interno */
         display: flex;
         flex-direction: column;
         justify-content: center; /* Centramos el contenido verticalmente */
+        position: relative;
+        z-index: 2;
     }
     .text-column h2 {
         font-size: 3.5rem;
         font-weight: 900;
         line-height: 1.2;
         margin-bottom: 2rem;
+        opacity: 0;
+        transform: translateX(-50px);
+        transition: all 0.8s ease;
+    }
+    .text-column h2.animate-in {
+        opacity: 1;
+        transform: translateX(0);
     }
     .text-column p {
         font-size: 1.25rem;
         line-height: 1.8;
         margin-bottom: 2.5rem;
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: all 0.8s ease;
+    }
+    .text-column p.animate-in {
         opacity: 0.9;
-        max-width: 500px; /* Limitamos el ancho del texto para que sea legible */
+        transform: translateX(0);
     }
     .content-button {
         display: inline-block;
@@ -55,11 +71,33 @@ import dadPhoto from '../assets/dad-photo.jpg'; // ¡Revisa que el nombre y exte
         padding: 1rem 2.5rem;
         text-decoration: none;
         border-radius: 8px;
-        transition: transform 0.2s ease;
+        transition: all 0.3s ease;
         align-self: flex-start; /* Alineamos el botón a la izquierda */
+        opacity: 0;
+        transform: translateY(30px);
+        position: relative;
+        overflow: hidden;
+    }
+    .content-button.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .content-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    .content-button:hover::before {
+        left: 100%;
     }
     .content-button:hover {
-        transform: scale(1.05);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
 
     /* --- COLUMNA DE IMAGEN --- */
@@ -68,6 +106,28 @@ import dadPhoto from '../assets/dad-photo.jpg'; // ¡Revisa que el nombre y exte
         background-size: cover; /* La imagen de fondo cubre todo el espacio */
         background-position: center; /* Centramos la imagen (puedes ajustarlo a 'top', 'left', etc.) */
         background-repeat: no-repeat;
+        opacity: 0;
+        transform: translateX(50px);
+        transition: all 0.8s ease;
+        position: relative;
+    }
+    .image-column.animate-in {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    .image-column::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(0, 82, 255, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .image-column:hover::after {
+        opacity: 1;
     }
 
     /* --- DISEÑO RESPONSIVO PARA MÓVILES --- */
@@ -88,3 +148,33 @@ import dadPhoto from '../assets/dad-photo.jpg'; // ¡Revisa que el nombre y exte
         }
     }
 </style>
+
+<script>
+    // Animation d'entrée au scroll
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target as HTMLElement;
+                    const delay = parseInt(element.dataset.delay || '0');
+                    
+                    setTimeout(() => {
+                        element.classList.add('animate-in');
+                    }, delay * 1000);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        elements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+    
+    // Initialiser les animations
+    document.addEventListener('DOMContentLoaded', animateOnScroll);
+</script>

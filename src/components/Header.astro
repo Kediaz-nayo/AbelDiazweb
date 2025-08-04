@@ -1,21 +1,59 @@
 ---
-const nombreNegocio = '<strong>Abel Díaz</strong><br /><em>Asesoría patrimonial y Seguros</em>';
+const nombreNegocio = '<em>Asesoría patrimonial y Seguros</em>';
 ---
-<header>
+<header class="animate-on-scroll" data-delay="0">
     <a href="/" class="logo" set:html={nombreNegocio}></a>
 </header>
 <style>
     header {
-        position: absolute; top: 0; left: 0; width: 100%;
-        padding: 2rem; display: flex; justify-content: space-between;
-        align-items: center; z-index: 10;
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%;
+        padding: 2rem; 
+        display: flex; 
+        justify-content: space-between;
+        align-items: center; 
+        z-index: 10;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.8s ease;
     }
+    
+    header.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
     .logo, .contact-link {
         font-size: 2rem;
         font-weight: 700;
         color: rgb(252, 252, 255);
         text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
     }
+    
+    .logo:hover {
+        transform: scale(1.05);
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+    
+    .logo::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #FFC700, #0052FF);
+        transition: width 0.3s ease;
+    }
+    
+    .logo:hover::after {
+        width: 100%;
+    }
+    
     .inclinado {
         font-style: italic !important;
     }
@@ -24,18 +62,45 @@ const nombreNegocio = '<strong>Abel Díaz</strong><br /><em>Asesoría patrimonia
         font-family: Georgia, 'Times New Roman', Times, serif !important;
         font-weight: 400 !important;
     }
+    
     /* ==================== MOBILE MEDIA QUERY ==================== */
     @media (max-width: 768px) {
-        /* Exemple : ajuster le padding du header */
         header {
-            padding: 1.5rem; /* modifie à ton goût */
+            padding: 1.5rem;
         }
 
-        /* Exemple : réduire la taille du logo */
         .logo {
-            font-size: 1.3rem; /* modifie à ton goût */
+            font-size: 1.3rem;
         }
-
-        /* Place d'autres règles ici */
     }
 </style>
+
+<script>
+    // Animation d'entrée au scroll
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target as HTMLElement;
+                    const delay = parseInt(element.dataset.delay || '0');
+                    
+                    setTimeout(() => {
+                        element.classList.add('animate-in');
+                    }, delay * 1000);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        elements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+    
+    // Initialiser les animations
+    document.addEventListener('DOMContentLoaded', animateOnScroll);
+</script>

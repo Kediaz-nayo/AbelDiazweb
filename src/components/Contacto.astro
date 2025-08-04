@@ -2,25 +2,25 @@ astro
 ---
 // src/components/Contacto.astro
 const nombre = "Abel Díaz";
-const telefono = "5215512345678"; // Formato internacional sin +, espacios o guiones
-const email = "abel.diaz@email.com";
+const telefono = "524495478201"; // Formato internacional sin +, espacios o guiones
+const email = "abeldiazasesores@gmail.com";
 const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compromiso. ¡Gracias!";
 ---
 <section id="contacto" class="contact-section">
     <div class="container">
-        <h2>¿Listo para tomar el control de tu futuro?</h2>
-        <p>Da el primer paso. Envíame un mensaje o un correo para una asesoría inicial sin costo ni compromiso. Hablemos de tus metas.</p>
+        <h2 class="animate-on-scroll">¿Listo para tomar el control de tu futuro?</h2>
+        <p class="animate-on-scroll" data-delay="0.2">Da el primer paso. Envíame un mensaje o un correo para una asesoría inicial sin costo ni compromiso. Hablemos de tus metas.</p>
         <div class="button-group">
-            <a href={`https://wa.me/${telefono}?text=${encodeURIComponent(mensajeWhatsapp)}`} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/${telefono}?text=${encodeURIComponent(mensajeWhatsapp)}`} class="btn btn-primary animate-on-scroll" data-delay="0.4" target="_blank" rel="noopener noreferrer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icon-tabler-brand-whatsapp"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" /><path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a4 4 0 0 1 -4 -4v-1a.5 .5 0 0 0 -1 0v1" /></svg>
                 Agendar por WhatsApp
             </a>
-            <a href={`mailto:${email}`} class="btn btn-secondary">
+            <a href={`mailto:${email}`} class="btn btn-secondary animate-on-scroll" data-delay="0.6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
                 Enviar un Correo
             </a>
         </div>
-        <div class="contact-info">
+        <div class="contact-info animate-on-scroll" data-delay="0.8">
             <p><strong>Asesor:</strong> {nombre}</p>
             <p><strong>Teléfono:</strong> {telefono.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, '+$1 $2 $3 $4')}</p>
             <p><strong>Email:</strong> {email}</p>
@@ -31,24 +31,59 @@ const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compr
 <style>
     .contact-section {
         padding: 6rem 1.5rem;
-        background: linear-gradient(45deg, #0052FF, #003aab); /* Un gradiente azul para darle impacto */
+        background: linear-gradient(45deg, #0052FF, #003aab);
         color: #ffffff;
+        position: relative;
+        overflow: hidden;
     }
+    
+    /* Effet de particules animées en arrière-plan */
+    .contact-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        animation: background-shift 10s ease-in-out infinite alternate;
+    }
+    
+    @keyframes background-shift {
+        0% { transform: scale(1) rotate(0deg); }
+        100% { transform: scale(1.1) rotate(1deg); }
+    }
+    
     .container {
         max-width: 800px;
         margin: 0 auto;
         text-align: center;
+        position: relative;
+        z-index: 1;
     }
     h2 {
         font-size: 2.75rem;
         font-weight: 900;
         margin-bottom: 1.5rem;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+    }
+    h2.animate-in {
+        opacity: 1;
+        transform: translateY(0);
     }
     p {
         font-size: 1.125rem;
         line-height: 1.7;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+    }
+    p.animate-in {
         opacity: 0.9;
-        margin-bottom: 2.5rem;
+        transform: translateY(0);
     }
     .button-group {
         display: flex;
@@ -56,6 +91,7 @@ const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compr
         gap: 1.5rem;
         flex-wrap: wrap;
         margin-bottom: 3rem;
+        margin-top: 2rem;
     }
     .btn {
         display: inline-flex;
@@ -68,14 +104,36 @@ const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compr
         border-radius: 8px;
         border: 2px solid transparent;
         transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(30px);
+        position: relative;
+        overflow: hidden;
+    }
+    .btn.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    .btn:hover::before {
+        left: 100%;
     }
     .btn-primary {
-        background-color: #FFC700; /* El color dorado que usamos antes */
+        background-color: #FFC700;
         color: #212529;
     }
     .btn-primary:hover {
         background-color: #ffda47;
         transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(255, 199, 0, 0.3);
     }
     .btn-secondary {
         background-color: transparent;
@@ -85,15 +143,28 @@ const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compr
     .btn-secondary:hover {
         background-color: #ffffff;
         color: #0052FF;
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
     }
     .btn svg {
         width: 20px;
         height: 20px;
+        transition: transform 0.3s ease;
+    }
+    .btn:hover svg {
+        transform: scale(1.1);
     }
     .contact-info {
         border-top: 1px solid rgba(255, 255, 255, 0.2);
         padding-top: 2rem;
         margin-top: 2rem;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+    }
+    .contact-info.animate-in {
+        opacity: 1;
+        transform: translateY(0);
     }
     .contact-info p {
         margin: 0.5rem 0;
@@ -104,7 +175,7 @@ const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compr
     /* ========== MOBILE MEDIA QUERY (max-width: 768px) ========== */
     @media (max-width: 768px) {
         .contact-section {
-            padding: 4rem 1rem; /* ajuste selon tes besoins */
+            padding: 4rem 1rem;
         }
 
         h2 {
@@ -116,10 +187,38 @@ const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compr
         }
 
         .button-group {
-            flex-direction: column; /* empile les boutons */
+            flex-direction: column;
             gap: 1rem;
         }
-
-        /* Ajoute d'autres règles responsives ici */
     }
 </style>
+
+<script>
+    // Animation d'entrée au scroll
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target as HTMLElement;
+                    const delay = parseInt(element.dataset.delay || '0');
+                    
+                    setTimeout(() => {
+                        element.classList.add('animate-in');
+                    }, delay * 1000);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        elements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+    
+    // Initialiser les animations
+    document.addEventListener('DOMContentLoaded', animateOnScroll);
+</script>
