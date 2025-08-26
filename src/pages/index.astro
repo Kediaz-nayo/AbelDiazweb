@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import ContentBlock from '../components/ContentBlock.astro'; // <-- ¡Importamos el nuevo componente!
+import ContentBlock from '../components/ContentBlock.astro';
 import Testimonios from '../components/Testimonios.astro';
 import Servicios from '../components/Servicios.astro';
 import Contacto from '../components/Contacto.astro';
@@ -14,9 +14,32 @@ import Contacto from '../components/Contacto.astro';
     <Header />
 	<main>
 		<Hero />
-		<ContentBlock />  {/* <-- ¡Y lo usamos aquí! */}
+		<ContentBlock />
 		<Servicios />
 		<Testimonios />
 		<Contacto />
 	</main>
 </Layout>
+
+<style>
+	main {
+		overflow-x: hidden;
+	}
+	
+	/* Amélioration de la transition entre sections */
+	main > * {
+		position: relative;
+	}
+	
+	/* Effet de parallaxe subtil pour les sections */
+	main > *:nth-child(even) {
+		transform: translateZ(0);
+	}
+	
+	/* Optimisation pour mobile */
+	@media (max-width: 768px) {
+		main {
+			overflow-x: hidden;
+		}
+	}
+</style>

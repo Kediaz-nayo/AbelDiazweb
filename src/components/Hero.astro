@@ -9,8 +9,8 @@ import heroImage from '../assets/nueva-imagen-hero.png';
     <!-- El contenido ya no necesita ser "des-invertido" -->
     <div class="hero-content">
         <h1 class="hero-title animate-on-scroll">Protege lo que amas</h1>
-        <br>
-        <h2 class="hero-subtitle animate-on-scroll" data-delay="0.3">Soluciones claras, humanas y a tu medida.</h2>
+        
+        <h1 class="hero-subtitle animate-on-scroll" data-delay="0.3" id="subtitle-hero">Impulsa lo que más importa.</h1>
     </div>
     
     <!-- Indicateur de scroll animé -->
@@ -61,7 +61,7 @@ import heroImage from '../assets/nueva-imagen-hero.png';
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background-color: rgba(17, 17, 17, 0.5);
+        background: rgba(17, 17, 17, 0.5);
         z-index: -1;
     }
 
@@ -90,7 +90,7 @@ import heroImage from '../assets/nueva-imagen-hero.png';
     }
 
     .hero-subtitle {
-        font-size: 1.5rem;
+        font-size: 2.5rem;
         font-weight: 400;
         color: var(--blanco-puro);
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);

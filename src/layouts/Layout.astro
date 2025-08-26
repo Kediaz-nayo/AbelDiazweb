@@ -16,125 +16,468 @@ const { title = 'Asesor de Seguros', description = 'Protegiendo tu futuro.' } = 
 		<title>{title}</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
 	</head>
 	<body>
 		<slot />
+		<div class="whatsapp-container">
+			<a href="https://wa.me/+34123456789" 
+			   class="whatsapp-button" 
+			   target="_blank" 
+			   rel="noopener noreferrer"
+			   id="whatsappButton">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+				</svg>
+				<span class="tooltip" id="whatsappTooltip">¡Hablemos de tus metas!</span>
+			</a>
+		</div>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				const tooltip = document.getElementById('whatsappTooltip');
+				
+				// Mostrar el tooltip después de 1 segundo de carga
+				setTimeout(() => {
+					tooltip.classList.add('show');
+					
+					// Ocultar el tooltip después de 5 segundos
+					setTimeout(() => {
+						tooltip.classList.remove('show');
+					}, 5000);
+				}, 1000);
+			});
+		</script>
 	</body>
 </html>
 <style is:global>
 	:root {
+		/* Palette de couleurs principale */
 		--azul-vibrante: #023fc2;
+		--azul-oscuro: #1a1a2e;
+		--azul-medio: #16213e;
+		--azul-claro: #0f3460;
 		--dorado-acento: #fad962;
+		--dorado-claro: #ffd700;
 		--gris-oscuro: #111111;
+		--gris-medio: #64748b;
 		--blanco-puro: #ffffff;
+		--blanco-suave: #e8f4fd;
+		
+		/* Espacement cohérent */
+		--spacing-xs: 0.5rem;
+		--spacing-sm: 1rem;
+		--spacing-md: 1.5rem;
+		--spacing-lg: 2rem;
+		--spacing-xl: 3rem;
+		--spacing-2xl: 4rem;
+		--spacing-3xl: 6rem;
+		--spacing-4xl: 8rem;
+		
+		/* Bordures et rayons */
+				--border-radius-sm: 8px;
+
+		/* Gradientes */
+		--gradiente-dorado: linear-gradient(135deg, #bca104ff 0%, #ffee00ff 50%, #ffb908ff 100%);
 	}
+
+	.whatsapp-container {
+		position: fixed;
+		bottom: 1rem;
+		right: 2rem;
+		z-index: 1000;
+	}
+
+	.whatsapp-button {
+		position: relative;
+		width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--gradiente-dorado);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+		transition: all 0.3s ease;
+	}
+
+	.whatsapp-button:hover {
+		transform: scale(1.1);
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+	}
+
+	.whatsapp-button svg {
+		width: 35px;
+		height: 35px;
+		color: white;
+	}
+
+	@keyframes tooltipEntrance {
+		0% {
+			opacity: 0;
+			transform: translate(-20px, -50%);
+		}
+		100% {
+			opacity: 1;
+			transform: translate(0, -50%);
+		}
+	}
+
+	.tooltip {
+		position: absolute;
+		right: calc(100% + 12px);
+		top: 50%;
+		transform: translateY(-50%);
+		background: var(--azul-oscuro);
+		color: white;
+		padding: 8px 12px;
+		border-radius: 6px;
+		font-size: 14px;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0;
+		transition: all 0.3s ease;
+	}
+
+	.tooltip.show {
+		animation: tooltipEntrance 0.5s ease forwards;
+	}
+
+	.tooltip::after {
+		content: '';
+		position: absolute;
+		right: -8px;
+		top: 50%;
+		transform: translateY(-50%);
+		border-width: 8px 0 8px 8px;
+		border-style: solid;
+		border-color: transparent transparent transparent var(--azul-oscuro);
+	}
+
+	.whatsapp-button:hover .tooltip {
+		opacity: 1;
+		transform: translate(0, -50%);
+	}
+
+	@media (max-width: 768px) {
+		.tooltip {
+			font-size: 12px;
+			padding: 6px 10px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.whatsapp-button {
+			width: 70px;
+			height: 70px;
+			bottom: 1rem;
+			right: 0.1rem;
+		}
+
+		.whatsapp-button svg {
+			width: 30px;
+			height: 30px;
+		}
+	}
+```
+		--border-radius-md: 12px;
+		--border-radius-lg: 16px;
+		--border-radius-xl: 20px;
+		--border-radius-full: 50px;
+		
+		/* Ombres */
+		--shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+		--shadow-md: 0 10px 25px rgba(0, 0, 0, 0.1);
+		--shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+		--shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.2);
+		
+		/* Transitions */
+		--transition-fast: 0.2s ease;
+		--transition-normal: 0.3s ease;
+		--transition-slow: 0.5s ease;
+		--transition-bounce: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
 	html {
-		font-family: 'Monsterrat', sans-serif;
+		font-family: 'Poppins', sans-serif;
 		background-color: var(--blanco-puro);
 		scroll-behavior: smooth;
+		font-size: 16px;
+		line-height: 1.6;
 	}
+	
 	body {
 		margin: 0;
 		font-size: 18px;
 		color: var(--gris-oscuro);
 		overflow-x: hidden;
+		font-weight: 400;
 	}
-    *, *::before, *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-    
-    /* Animations globales */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes fadeInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes fadeInRight {
-        from {
-            opacity: 0;
-            transform: translateX(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes scaleIn {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-    
-    /* Classes d'animation utilitaires */
-    .fade-in-up {
-        animation: fadeInUp 0.8s ease forwards;
-    }
-    
-    .fade-in-left {
-        animation: fadeInLeft 0.8s ease forwards;
-    }
-    
-    .fade-in-right {
-        animation: fadeInRight 0.8s ease forwards;
-    }
-    
-    .scale-in {
-        animation: scaleIn 0.8s ease forwards;
-    }
-    
-    /* Effet de parallaxe subtil */
-    .parallax {
-        transform: translateZ(0);
-        will-change: transform;
-    }
-    
-    /* Amélioration du scroll sur mobile */
-    @media (max-width: 768px) {
-        html {
-            scroll-behavior: auto;
-        }
-    }
-    
-    /* Optimisations de performance */
-    .animate-on-scroll {
-        will-change: opacity, transform;
-    }
-    
-    /* Effet de focus amélioré pour l'accessibilité */
-    a:focus,
-    button:focus {
-        outline: 2px solid #0052FF;
-        outline-offset: 2px;
-    }
-    
-    /* Transitions fluides pour tous les éléments interactifs */
-    a, button, .btn {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+	
+	*, *::before, *::after {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+	
+	/* Typographie cohérente */
+	h1, h2, h3, h4, h5, h6 {
+		font-family: 'Georgia', serif;
+		font-weight: 700;
+		line-height: 1.2;
+		margin-bottom: var(--spacing-md);
+	}
+	
+	h1 {
+		font-size: clamp(2.5rem, 5vw, 7rem);
+		font-weight: 900;
+	}
+	
+	h2 {
+		font-size: clamp(2rem, 4vw, 3.5rem);
+		font-weight: 900;
+	}
+	
+	h3 {
+		font-size: clamp(1.5rem, 3vw, 2rem);
+		font-weight: 700;
+	}
+	
+	p {
+		font-size: clamp(1rem, 2vw, 1.25rem);
+		line-height: 1.7;
+		margin-bottom: var(--spacing-md);
+	}
+	
+	/* Animations globales */
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	
+	@keyframes fadeInLeft {
+		from {
+			opacity: 0;
+			transform: translateX(-30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+	
+	@keyframes fadeInRight {
+		from {
+			opacity: 0;
+			transform: translateX(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+	
+	@keyframes scaleIn {
+		from {
+			opacity: 0;
+			transform: scale(0.8);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+	
+	@keyframes float {
+		0%, 100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+	
+	/* Classes d'animation utilitaires */
+	.fade-in-up {
+		animation: fadeInUp 0.8s ease forwards;
+	}
+	
+	.fade-in-left {
+		animation: fadeInLeft 0.8s ease forwards;
+	}
+	
+	.fade-in-right {
+		animation: fadeInRight 0.8s ease forwards;
+	}
+	
+	.scale-in {
+		animation: scaleIn 0.8s ease forwards;
+	}
+	
+	.float {
+		animation: float 3s ease-in-out infinite;
+	}
+	
+	/* Effet de parallaxe subtil */
+	.parallax {
+		transform: translateZ(0);
+		will-change: transform;
+	}
+	
+	/* Amélioration du scroll sur mobile */
+	@media (max-width: 768px) {
+		html {
+			scroll-behavior: auto;
+		}
+		
+		body {
+			font-size: 16px;
+		}
+	}
+	
+	/* Optimisations de performance */
+	.animate-on-scroll {
+		will-change: opacity, transform;
+	}
+	
+	/* Effet de focus amélioré pour l'accessibilité */
+	a:focus,
+	button:focus {
+		outline: 2px solid var(--azul-vibrante);
+		outline-offset: 2px;
+	}
+	
+	/* Transitions fluides pour tous les éléments interactifs */
+	a, button, .btn {
+		transition: all var(--transition-normal);
+	}
+	
+	/* Styles pour les badges de section */
+	.section-badge {
+		display: inline-block;
+		background: linear-gradient(135deg, var(--dorado-acento), var(--dorado-claro));
+		color: var(--gris-oscuro);
+		font-size: 0.875rem;
+		font-weight: 700;
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border-radius: var(--border-radius-full);
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		margin-bottom: var(--spacing-md);
+	}
+	
+	/* Styles pour les boutons cohérents */
+	.btn-primary {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+		font-weight: 700;
+		font-size: 1.1rem;
+		color: var(--gris-oscuro);
+		background: linear-gradient(135deg, var(--dorado-acento), var(--dorado-claro));
+		padding: var(--spacing-sm) var(--spacing-lg);
+		text-decoration: none;
+		border-radius: var(--border-radius-md);
+		transition: all var(--transition-bounce);
+		box-shadow: var(--shadow-md);
+		border: none;
+		cursor: pointer;
+	}
+	
+	.btn-primary:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--shadow-lg);
+	}
+	
+	.btn-secondary {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+		font-weight: 600;
+		font-size: 0.95rem;
+		color: var(--azul-vibrante);
+		background: rgba(2, 63, 194, 0.05);
+		padding: var(--spacing-xs) var(--spacing-md);
+		text-decoration: none;
+		border-radius: var(--border-radius-md);
+		border: 2px solid rgba(2, 63, 194, 0.2);
+		transition: all var(--transition-normal);
+	}
+	
+	.btn-secondary:hover {
+		background: var(--azul-vibrante);
+		color: var(--blanco-puro);
+		border-color: var(--azul-vibrante);
+		transform: translateY(-2px);
+	}
+	
+	/* Conteneurs cohérents */
+	.container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 var(--spacing-md);
+	}
+	
+	.section-padding {
+		padding: var(--spacing-4xl) 0;
+	}
+	
+	/* Grilles responsives */
+	.grid {
+		display: grid;
+		gap: var(--spacing-lg);
+	}
+	
+	.grid-2 {
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	}
+	
+	.grid-3 {
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	}
+	
+	.grid-4 {
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	}
+	
+	/* Utilitaires de texte */
+	.text-gradient {
+		background: linear-gradient(135deg, var(--blanco-puro), var(--blanco-suave));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+	
+	.text-center {
+		text-align: center;
+	}
+	
+	.text-left {
+		text-align: left;
+	}
+	
+	.text-right {
+		text-align: right;
+	}
+	
+	/* Utilitaires d'espacement */
+	.mb-0 { margin-bottom: 0; }
+	.mb-1 { margin-bottom: var(--spacing-xs); }
+	.mb-2 { margin-bottom: var(--spacing-sm); }
+	.mb-3 { margin-bottom: var(--spacing-md); }
+	.mb-4 { margin-bottom: var(--spacing-lg); }
+	.mb-5 { margin-bottom: var(--spacing-xl); }
+	
+	.mt-0 { margin-top: 0; }
+	.mt-1 { margin-top: var(--spacing-xs); }
+	.mt-2 { margin-top: var(--spacing-sm); }
+	.mt-3 { margin-top: var(--spacing-md); }
+	.mt-4 { margin-top: var(--spacing-lg); }
+	.mt-5 { margin-top: var(--spacing-xl); }
 </style>

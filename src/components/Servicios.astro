@@ -4,38 +4,60 @@ const servicios = [
   {
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-shield-heart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.078 7.024" /><path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005 -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128 -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296z" /></svg>`,
     title: "Gastos Médicos Mayores",
-    description: "Protege tu salud y tu patrimonio ante cualquier imprevisto. Accede a los mejores hospitales sin descapitalizarte."
+    description: "Protege tu salud y tu patrimonio ante cualquier imprevisto. Accede a los mejores hospitales sin descapitalizarte.",
+    features: ["Cobertura integral", "Red de hospitales premium", "Sin deducible"]
   },
   {
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-plant-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M2 9a10 10 0 1 0 20 0" /><path d="M12 19a10 10 0 0 1 10 -10" /><path d="M2 9a10 10 0 0 1 10 10" /><path d="M12 4a9.7 9.7 0 0 1 2.941 7" /><path d="M9.059 11a9.7 9.7 0 0 1 2.941 -7" /></svg>`,
     title: "Plan Personal de Retiro",
-    description: "Asegura una jubilación digna y sin preocupaciones. Comienza a construir tu futuro hoy con beneficios fiscales."
+    description: "Asegura una jubilación digna y sin preocupaciones. Comienza a construir tu futuro hoy con beneficios fiscales.",
+    features: ["Beneficios fiscales", "Rendimientos garantizados", "Flexibilidad total"]
   },
   {
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-users-group"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 10h2a2 2 0 0 1 2 2v1" /></svg>`,
     title: "Seguro de Vida",
-    description: "El mayor acto de amor: blinda financieramente a tus seres queridos ante tu ausencia. La certeza en momentos difíciles."
+    description: "El mayor acto de amor: blinda financieramente a tus seres queridos ante tu ausencia. La certeza en momentos difíciles.",
+    features: ["Protección familiar", "Cobertura amplia", "Pagos flexibles"]
   },
   {
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-chart-infographic"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M7 3v4h4" /><path d="M9 17l0 4" /><path d="M17 14l0 7" /><path d="M13 13l0 8" /><path d="M21 12l0 9" /></svg>`,
     title: "Asesoría Patrimonial",
-    description: "Más que un seguro, una estrategia integral. Analizamos tus metas para crear un plan que haga crecer y proteja tu dinero."
+    description: "Más que un seguro, una estrategia integral. Analizamos tus metas para crear un plan que haga crecer y proteja tu dinero.",
+    features: ["Estrategia personalizada", "Crecimiento patrimonial", "Protección integral"]
   }
 ];
 ---
 <section id="servicios" class="services-section">
     <div class="container">
         <div class="section-header animate-on-scroll">
-            <span class="subtitle">SOLUCIONES</span>
+            <span class="section-badge">SOLUCIONES</span>
             <h2>Tu Futuro, Claro y Seguro</h2>
             <p>Estos son los pilares con los que construiremos tu tranquilidad financiera. Cada uno diseñado a tu medida.</p>
         </div>
         <div class="services-grid">
             {servicios.map((servicio, index) => (
                 <div class="service-card animate-on-scroll" data-delay={index * 0.2}>
-                    <div class="icon-container" set:html={servicio.icon} />
-                    <h3>{servicio.title}</h3>
-                    <p>{servicio.description}</p>
+                    <div class="card-header">
+                        <div class="icon-container" set:html={servicio.icon} />
+                        <h3>{servicio.title}</h3>
+                    </div>
+                    <p class="description">{servicio.description}</p>
+                    <div class="features-list">
+                        {servicio.features.map(feature => (
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <span>{feature}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div class="card-footer">
+                        <a href="/contacto" class="service-button">
+                            <span>Conoce más</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             ))}
         </div>
@@ -45,151 +67,253 @@ const servicios = [
 <style>
     .services-section {
         padding: 6rem 1.5rem;
-        background-color: #f8f9fa;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+        margin-top: -2rem;
     }
+
+    .services-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230052FF' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        pointer-events: none;
+    }
+
     .container {
         max-width: 1200px;
         margin: 0 auto;
+        position: relative;
+        z-index: 2;
     }
+
     .section-header {
         text-align: center;
-        margin-bottom: 4rem;
+        margin-bottom: 5rem;
     }
-    .subtitle {
+
+    .section-badge {
         display: inline-block;
-        margin-bottom: 0.5rem;
-        padding: 0.25rem 0.75rem;
-        background-color: #e9ecef;
-        color: #495057;
+        background: linear-gradient(135deg, var(--dorado-acento), #ffd700);
+        color: var(--gris-oscuro);
         font-size: 0.875rem;
         font-weight: 700;
-        border-radius: 99px;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
+
     .section-header h2 {
-        font-size: 2.75rem;
+        font-size: 3.5rem;
         font-weight: 900;
-        margin-bottom: 1rem;
-        color: #212529;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, var(--gris-oscuro), #1a1a2e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
+
     .section-header p {
-        font-size: 1.125rem;
-        color: #495057;
-        max-width: 650px;
+        font-size: 1.25rem;
+        color: #64748b;
+        max-width: 700px;
         margin: 0 auto;
+        line-height: 1.7;
     }
+
     .services-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2.5rem;
     }
+
     .service-card {
-        background-color: #ffffff;
+        background: var(--blanco-puro);
+        border-radius: 20px;
         padding: 2.5rem;
-        border-radius: 12px;
-        border: 1px solid #dee2e6;
-        text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 82, 255, 0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 0;
         transform: translateY(30px);
+        position: relative;
+        overflow: hidden;
     }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, var(--dorado-acento), #ffd700);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
     .service-card.animate-in {
         opacity: 1;
         transform: translateY(0);
     }
+
     .service-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-    }
-    .icon-container {
-        display: inline-flex;
-        padding: 1rem;
-        background-color: #0052FF1A;
-        border-radius: 50%;
-        margin-bottom: 1.5rem;
-        transition: transform 0.3s ease, background-color 0.3s ease;
-    }
-    
-    /* Mobile specific icon container */
-    @media (max-width: 768px) {
-        .icon-container {
-            border-radius: 50%;
-            margin-bottom: 1.5rem;
-            width: 65px;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .service-card {
-            padding-top: 1.2rem;
-        }
-        
-        .service-card h3 {
-            margin-top: -0.6rem;
-        }
-    }
-    .service-card:hover .icon-container {
-        transform: scale(1.1);
-        background-color: #0052FF2A;
-    }
-    .icon-container svg {
-        width: 32px;
-        height: 32px;
-        color: #0052FF;
-    }
-    .service-card h3 {
-        font-size: 1.375rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: #212529;
-    }
-    .service-card p {
-        font-size: 1rem;
-        line-height: 1.6;
-        color: #495057;
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
     }
 
-    /* ========== MOBILE MEDIA QUERY (max-width: 768px) ========== */
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .card-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .icon-container {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(0, 82, 255, 0.1), rgba(0, 82, 255, 0.05));
+        border-radius: 20px;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .service-card:hover .icon-container {
+        transform: scale(1.1);
+        background: linear-gradient(135deg, rgba(0, 82, 255, 0.15), rgba(0, 82, 255, 0.1));
+    }
+
+    .icon-container svg {
+        width: 36px;
+        height: 36px;
+        color: var(--azul-vibrante);
+    }
+
+    .service-card h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gris-oscuro);
+        margin-bottom: 1rem;
+    }
+
+    .description {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #64748b;
+        margin-bottom: 2rem;
+    }
+
+    .features-list {
+        margin-bottom: 2rem;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        color: #475569;
+    }
+
+    .feature-icon {
+        width: 20px;
+        height: 20px;
+        background: var(--dorado-acento);
+        color: var(--gris-oscuro);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .card-footer {
+        text-align: center;
+    }
+
+    .service-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--azul-vibrante);
+        text-decoration: none;
+        padding: 0.75rem 1.5rem;
+        border: 2px solid rgba(0, 82, 255, 0.2);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: rgba(0, 82, 255, 0.05);
+    }
+
+    .service-button:hover {
+        background: var(--azul-vibrante);
+        color: var(--blanco-puro);
+        border-color: var(--azul-vibrante);
+        transform: translateY(-2px);
+    }
+
+    /* ========== MOBILE MEDIA QUERY ========== */
     @media (max-width: 768px) {
+        .services-section {
+            padding: 4rem 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+        }
+
         .services-grid {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            gap: 1rem;
+            gap: 1.5rem;
             padding: 0.5rem 0;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         .service-card {
-            min-width: 270px;
-            max-width: 270px;
-            min-height: 320px;
+            min-width: 300px;
+            max-width: 300px;
             scroll-snap-align: start;
             flex-shrink: 0;
-            padding: 2.2rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            padding: 2rem;
         }
-        
+
         .service-card h3 {
             font-size: 1.3rem;
         }
-        
-        .service-card p {
+
+        .description {
             font-size: 1rem;
-            line-height: 1.5;
         }
 
-        .section-header h2 {
-            font-size: 2rem;
+        .icon-container {
+            width: 70px;
+            height: 70px;
         }
 
-        .section-header p {
-            font-size: 1rem;
+        .icon-container svg {
+            width: 32px;
+            height: 32px;
         }
     }
 </style>

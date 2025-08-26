@@ -3,6 +3,7 @@ const nombreNegocio = '<em>Asesoría patrimonial y Seguros</em>';
 ---
 <header class="animate-on-scroll" data-delay="0">
     <a href="/" class="logo" set:html={nombreNegocio}></a>
+
 </header>
 <style>
     header {
@@ -24,7 +25,16 @@ const nombreNegocio = '<em>Asesoría patrimonial y Seguros</em>';
         opacity: 1;
         transform: translateY(0);
     }
-    
+    #subtitle-header {
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: rgb(252, 252, 255);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        right: 950px;
+        top: 55px;
+    }
     .logo, .contact-link {
         font-size: 2rem;
         font-weight: 700;
