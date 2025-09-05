@@ -47,10 +47,11 @@ import heroImage from '../assets/nueva-imagen-hero.png';
         z-index: -2;
         background-image: var(--bg-image);
         background-size: cover;
-        background-position: center;
+        background-position: center calc(var(--parallax-offset-y, 0px) + 50%);
         background-repeat: no-repeat;
         transform: scaleX(-1);
         animation: hero-zoom 20s ease-in-out infinite alternate;
+        will-change: background-position;
     }
 
     @keyframes hero-zoom {
@@ -160,7 +161,7 @@ import heroImage from '../assets/nueva-imagen-hero.png';
         }
 
         #hero-section::before {
-            background-position: 30% center;
+            background-position: 30% calc(var(--parallax-offset-y, 0px) + 50%);
             background-size: cover;
         }
     }
@@ -201,7 +202,35 @@ import heroImage from '../assets/nueva-imagen-hero.png';
             observer.observe(element);
         });
     }
+
+    // Efecto Parallax
+    function initParallax() {
+        const heroSection = document.getElementById('hero-section');
+        if (!heroSection) return;
+
+        let ticking = false;
+        
+        function updateParallax() {
+            const offsetY = window.scrollY * 0.3; // Reducido de 0.5 a 0.2 para un movimiento más sutil
+            if (heroSection) {
+                heroSection.style.setProperty('--parallax-offset-y', `${offsetY}px`);
+            }
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateParallax();
+                });
+                ticking = true;
+            }
+        });
+    }
     
     // Initialiser les animations
-    document.addEventListener('DOMContentLoaded', animateOnScroll);
+    document.addEventListener('DOMContentLoaded', () => {
+        animateOnScroll();
+        initParallax();
+    });
 </script>
