@@ -47,31 +47,37 @@ const servicios = [
             <p>Cada servicio es un pilar diseñado a tu medida, para proteger tu salud, tu vida, tu patrimonio y asegurar tu futuro financiero.</p>
         </div>
         <div class="services-grid">
-            {servicios.map((servicio, index) => (
-                <div class="service-card animate-on-scroll" data-delay={index * 0.2}>
-                    <div class="card-header">
-                        <div class="icon-container" set:html={servicio.icon} />
-                        <h3>{servicio.title}</h3>
+            {servicios.map((servicio, index) => {
+                const columns = 3;
+                const row = Math.floor(index / columns);
+                const col = index % columns;
+                const delay = col * 0.2 + row * 0.2;
+                return (
+                    <div class="service-card animate-on-scroll" data-delay={delay}>
+                        <div class="card-header">
+                            <div class="icon-container" set:html={servicio.icon} />
+                            <h3>{servicio.title}</h3>
+                        </div>
+                        <p class="description">{servicio.description}</p>
+                        <div class="features-list">
+                            {servicio.features.map(feature => (
+                                <div class="feature-item">
+                                    <div class="feature-icon">✓</div>
+                                    <span>{feature}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div class="card-footer">
+                            <a href="/contacto" class="service-button">
+                                <span>Conoce más</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
-                    <p class="description">{servicio.description}</p>
-                    <div class="features-list">
-                        {servicio.features.map(feature => (
-                            <div class="feature-item">
-                                <div class="feature-icon">✓</div>
-                                <span>{feature}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div class="card-footer">
-                        <a href="/contacto" class="service-button">
-                            <span>Conoce más</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     </div>
 </section>
@@ -268,7 +274,7 @@ const servicios = [
         padding: 0.75rem 1.5rem;
         border: 2px solid rgba(0, 82, 255, 0.2);
         border-radius: 12px;
-        transition: all 0.3s ease;
+        transition: all 10.3s ease;
         background: rgba(0, 82, 255, 0.05);
     }
 
@@ -339,7 +345,7 @@ const servicios = [
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const element = entry.target as HTMLElement;
-                    const delay = parseInt(element.dataset.delay || '0');
+                    const delay = parseFloat(element.dataset.delay || '0');
                     
                     setTimeout(() => {
                         element.classList.add('animate-in');
