@@ -5,7 +5,7 @@ const nombre = "Abel Díaz";
 const telefono = "524495478201"; // Formato internacional sin +, espacios o guiones
 const email = "abeldiazasesores@gmail.com";
 const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compromiso. ¡Gracias!";
-const instagram = "abeldiaz_asesor"; // Placeholder - remplacer par le vrai nom d'utilisateur
+const instagram = "abel.patrimonial"; // Placeholder - remplacer par le vrai nom d'utilisateur
 ---
 <section id="contacto" class="contact-section">
     <div class="container">
@@ -191,6 +191,32 @@ const instagram = "abeldiaz_asesor"; // Placeholder - remplacer par le vrai nom 
         margin: 0.5rem 0;
         font-size: 1rem;
         opacity: 0.8;
+    }
+
+    /* Désactiver la détection automatique des numéros de téléphone */
+    .contact-info p {
+        -webkit-text-size-adjust: 100%;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* S'assurer que les numéros de téléphone restent blancs */
+    .contact-info p a {
+        color: #e8f4fd !important;
+        text-decoration: none !important;
+        pointer-events: none;
+    }
+
+    .contact-info p a:visited {
+        color: #e8f4fd !important;
+    }
+
+    .contact-info p a:hover {
+        color: #e8f4fd !important;
     }
 
     .social-media {

@@ -10,8 +10,8 @@ const { title = 'Asesor de Seguros', description = 'Protegiendo tu futuro.' } = 
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
-		<meta name="viewport" content="width=device-width" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<title>{title}</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,15 +37,17 @@ const { title = 'Asesor de Seguros', description = 'Protegiendo tu futuro.' } = 
 			document.addEventListener('DOMContentLoaded', function() {
 				const tooltip = document.getElementById('whatsappTooltip');
 				
-				// Mostrar el tooltip después de 1 segundo de carga
-				setTimeout(() => {
-					tooltip.classList.add('show');
-					
-					// Ocultar el tooltip después de 5 segundos
+				if (tooltip) {
+					// Mostrar el tooltip después de 1 segundo de carga
 					setTimeout(() => {
-						tooltip.classList.remove('show');
-					}, 5000);
-				}, 1000);
+						tooltip.classList.add('show');
+						
+						// Ocultar el tooltip después de 5 segundos
+						setTimeout(() => {
+							tooltip.classList.remove('show');
+						}, 5000);
+					}, 1000);
+				}
 			});
 		</script>
 	</body>
