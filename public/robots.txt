@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://www.abeldiaz.pro/sitemap.xml
+Sitemap: https://abeldiaz.pro/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1
