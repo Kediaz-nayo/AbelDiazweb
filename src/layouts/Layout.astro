@@ -12,11 +12,87 @@ const { title = 'Asesor de Seguros', description = 'Protegiendo tu futuro.' } = 
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="format-detection" content="telephone=no" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		
+		<!-- Favicon et icônes pour tous les appareils -->
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		
+		<!-- Meta tags SEO -->
 		<title>{title}</title>
+		<meta name="keywords" content="asesoría patrimonial, seguros, Abel Díaz, asesor financiero, protección patrimonial, seguros de vida, seguros de gastos médicos, inversiones" />
+		<meta name="author" content="Abel Díaz" />
+		<meta name="robots" content="index, follow" />
+		<meta name="language" content="es" />
+		<meta name="revisit-after" content="7 days" />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://www.abeldiaz.pro/" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content="https://www.abeldiaz.pro/abeldiaz.jpg" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:site_name" content="Abel Díaz - Asesoría Patrimonial" />
+		<meta property="og:locale" content="es_MX" />
+		
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://www.abeldiaz.pro/" />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content="https://www.abeldiaz.pro/abeldiaz.jpg" />
+		
+		<!-- Canonical URL -->
+		<link rel="canonical" href="https://www.abeldiaz.pro/" />
+		
+		<!-- Preconnect pour optimiser les performances -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+		
+		<!-- DNS prefetch pour améliorer les performances -->
+		<link rel="dns-prefetch" href="//wa.me">
+		<link rel="dns-prefetch" href="//fonts.googleapis.com">
+		<link rel="dns-prefetch" href="//fonts.gstatic.com">
+		
+		<!-- Preload des ressources critiques -->
+		<link rel="preload" href="/favicon.ico" as="image" type="image/x-icon">
+		<link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+		<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap"></noscript>
+		
+		<!-- Schema.org structured data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Person",
+			"name": "Abel Díaz",
+			"jobTitle": "Asesor Patrimonial y de Seguros",
+			"description": "Asesoría honesta y directa de un experto local en quien puedes confiar",
+			"url": "https://www.abeldiaz.pro",
+			"sameAs": [
+				"https://wa.me/+524495478201"
+			],
+			"contactPoint": {
+				"@type": "ContactPoint",
+				"telephone": "+52-449-547-8201",
+				"contactType": "customer service",
+				"availableLanguage": "Spanish"
+			},
+			"address": {
+				"@type": "PostalAddress",
+				"addressCountry": "MX"
+			},
+			"offers": {
+				"@type": "Offer",
+				"description": "Asesoría patrimonial y seguros personalizados",
+				"category": "Financial Services"
+			}
+		}
+		</script>
 	</head>
 	<body>
 		<slot />
