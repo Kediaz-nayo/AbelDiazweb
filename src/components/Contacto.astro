@@ -5,7 +5,7 @@ const nombre = "Abel Díaz";
 const telefono = "524495478201"; // Formato internacional sin +, espacios o guiones
 const email = "abeldiazasesores@gmail.com";
 const mensajeWhatsapp = "Hola Abel, me gustaría agendar una asesoría sin compromiso. ¡Gracias!";
-const instagram = "abel.patrimonial"; // Placeholder - remplacer par le vrai nom d'utilisateur
+const instagram = "abel.patrimonial";
 const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
 ---
 <section id="contacto" class="contact-section">
@@ -26,6 +26,8 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
             <p><strong>Asesor:</strong> {nombre}</p>
             <p><strong>Teléfono:</strong> {telefono.replace(/(\d{2})(\d{3})(\d{3})(\d{3})/, '+$1 $2 $3 $4')}</p>
             <p><strong>Email:</strong> {email}</p>
+            <p><strong>Pagina desarrollada por:</strong> <a href="https://despegamos.pages.dev" target="_blank" rel="noopener noreferrer">Despegamos<span class="emoji" aria-hidden="true">🚀</span></a></p>
+
         </div>
         
         <div class="social-media animate-on-scroll" data-delay="1.0">
@@ -117,7 +119,7 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
         justify-content: center;
         gap: 1.5rem;
         flex-wrap: wrap;
-        margin-bottom: 3rem;
+        margin-bottom: 1.25rem; /* reducido para acercar al bloque de contacto */
         margin-top: 2rem;
     }
     .btn {
@@ -184,8 +186,8 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
     }
     .contact-info {
         border-top: 1px solid rgba(255, 255, 255, 0.2);
-        padding-top: 2rem;
-        margin-top: 2rem;
+        padding-top: 1.25rem; /* menor padding para acercar contenido */
+        margin-top: 0.5rem; /* reducir espacio entre botones y contacto */
         opacity: 0;
         transform: translateY(30px);
         transition: all 0.8s ease;
@@ -195,12 +197,21 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
         transform: translateY(0);
     }
     .contact-info p {
-        margin: 0.5rem 0;
-        font-size: 1rem;
-        opacity: 0.8;
+        margin: 0.4rem 0; /* menos separación entre líneas */
+        font-size: 1.125rem; /* ligeramente más grande */
+        opacity: 0.9;
     }
 
-    /* Désactiver la détection automatique des numéros de téléphone */
+    /* Estilo para el emoji del enlace Despegamos */
+    .emoji {
+        display: inline-block;
+        margin-left: 0.4rem;
+        vertical-align: middle;
+        font-size: 1.05em; /* un poco más grande que el texto */
+        line-height: 1;
+    }
+
+    /* Evitar selección excesiva en la sección de contacto, pero permitir interactuar con enlaces */
     .contact-info p {
         -webkit-text-size-adjust: 100%;
         -webkit-touch-callout: none;
@@ -211,11 +222,12 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
         user-select: none;
     }
 
-    /* S'assurer que les numéros de téléphone restent blancs */
+    /* Asegurar que los enlaces sean clicables y tengan apariencia correcta */
     .contact-info p a {
         color: #e8f4fd !important;
         text-decoration: none !important;
-        pointer-events: none;
+        pointer-events: auto; /* permitimos clicks */
+        cursor: pointer;
     }
 
     .contact-info p a:visited {
@@ -224,6 +236,7 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
 
     .contact-info p a:hover {
         color: #e8f4fd !important;
+        text-decoration: underline !important;
     }
 
     .social-media {
@@ -318,18 +331,18 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
 </style>
 
 <script>
-    // Animation d'entrée au scroll
+    // Animación de entrada al hacer scroll
     function animateOnScroll() {
         const elements = document.querySelectorAll('.animate-on-scroll');
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const element = entry.target as HTMLElement;
-                    const delay = parseInt(element.dataset.delay || '0');
-                    
+                    const element = entry.target;
+                    const delay = parseInt((element instanceof HTMLElement ? element.dataset.delay : '0') || '0');
+
                     setTimeout(() => {
-                        element.classList.add('animate-in');
+                        if (element instanceof HTMLElement) element.classList.add('animate-in');
                     }, delay * 1000);
                 }
             });
@@ -337,12 +350,12 @@ const linkedin = "https://mx.linkedin.com/in/abeld%C3%ADaz6";
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         });
-        
+
         elements.forEach(element => {
             observer.observe(element);
         });
     }
-    
-    // Initialiser les animations
+
+    // Inicializar las animaciones
     document.addEventListener('DOMContentLoaded', animateOnScroll);
 </script>
