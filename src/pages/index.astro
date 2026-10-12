@@ -2,39 +2,44 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import Filosofia from '../components/Filosofia.astro';
+import ContentBlock from '../components/ContentBlock.astro';
+import Testimonios from '../components/Testimonios.astro';
+import Servicios from '../components/Servicios.astro';
+import Contacto from '../components/Contacto.astro';
 ---
-
 <Layout 
-  title="Abel Díaz - Asesor Financiero y Patrimonial"
-  description="Acompañamiento financiero y patrimonial para tomar mejores decisiones. Claridad hoy, tranquilidad mañana."
+	title="Asesor Financiero y Patrimonial" 
+	description="Hola, soy Abel Díaz. Acompaño a personas y familias a tomar mejores decisiones financieras, proteger su patrimonio y construir tranquilidad a largo plazo, con estrategia y claridad."
 >
-  <Header />
-  <main>
-    <Hero />
-    
-    <!-- Sobre mí section - brief intro before philosophy -->
-    <section id="sobre-mi" class="section container" style="min-height: 30vh;">
-      <h2>Sobre mí</h2>
-      <p>Sección en desarrollo...</p>
-    </section>
-    
-    <Filosofia />
-    
-    <section id="servicios" class="section container" style="min-height: 50vh;">
-      <h2>Servicios</h2>
-      <p>Sección en desarrollo...</p>
-    </section>
-    
-    <section id="contacto" class="section container" style="min-height: 50vh;">
-      <h2>Contacto</h2>
-      <p>Sección en desarrollo...</p>
-    </section>
-  </main>
+    <Header />
+	<main>
+		<Hero />
+		<ContentBlock />
+		<Servicios />
+		<Testimonios />
+		<Contacto />
+	</main>
 </Layout>
 
 <style>
-  main {
-    overflow-x: hidden;
-  }
+	main {
+		overflow-x: hidden;
+	}
+	
+	/* Amélioration de la transition entre sections */
+	main > * {
+		position: relative;
+	}
+	
+	/* Effet de parallaxe subtil pour les sections */
+	main > *:nth-child(even) {
+		transform: translateZ(0);
+	}
+	
+	/* Optimisation pour mobile */
+	@media (max-width: 768px) {
+		main {
+			overflow-x: hidden;
+		}
+	}
 </style>

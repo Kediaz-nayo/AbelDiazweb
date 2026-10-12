@@ -1,5 +1,5 @@
 {
-  "name": "orbital-osiris",
+  "name": "",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -9,6 +9,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.17.1"
+    "@astrojs/netlify": "^6.4.1",
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^5.11.0",
+    "groq-sdk": "^0.27.0"
   }
 }
