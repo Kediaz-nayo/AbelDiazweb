@@ -1,0 +1,149 @@
+---
+import Icons from './Icons.astro';
+import { SITE } from '../data/site';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer" data-theme="dark">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-left">
+        <a href="/" class="footer-brand">
+          <svg width="32" height="32" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <rect width="64" height="64" rx="14" fill="#141C2B" stroke="rgba(214,181,113,0.3)" stroke-width="2" />
+            <path d="M32 11L49 18V31.5C49 42.6 41.5 50.8 32 54C22.5 50.8 15 42.6 15 31.5V18L32 11Z" stroke="#D6B571" stroke-width="2.6" stroke-linejoin="round" />
+            <path d="M23 42L32 21L41 42" stroke="#D6B571" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M27.5 42L32 32.5L36.5 42" fill="#D6B571" />
+          </svg>
+          <span>Abel Díaz</span>
+        </a>
+        <p class="footer-sub">{SITE.role} · {SITE.locations}</p>
+      </div>
+
+      <div class="footer-links">
+        <div>
+          <p class="f-label">Contacto</p>
+          <ul>
+            <li><a href={`tel:+${SITE.contact.phoneRaw}`}>{SITE.contact.phoneDisplay}</a></li>
+            <li><a href={`mailto:${SITE.contact.email}`}>{SITE.contact.email}</a></li>
+            <li><a href={SITE.contact.vcardUrl} download="Abel-Diaz-Asesor.vcf">Guardar contacto (.vcf)</a></li>
+            <li><a href="/tarjeta">Tarjeta digital + QR</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="f-label">Redes</p>
+          <ul>
+            <li>
+              <a href={SITE.contact.instagramUrl} target="_blank" rel="noopener noreferrer" class="f-social">
+                <Icons name="instagram" size={15} />
+                <span>@{SITE.contact.instagramHandle}</span>
+              </a>
+            </li>
+            <li>
+              <a href={SITE.contact.linkedinUrl} target="_blank" rel="noopener noreferrer" class="f-social">
+                <Icons name="linkedin" size={15} />
+                <span>LinkedIn</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {currentYear} {SITE.name}. Todos los derechos reservados.</span>
+      <span>Información orientativa sujeta a condiciones generales de cada aseguradora.</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: #05070b;
+    color: var(--ink-on-dark-muted);
+    padding-block: 3.5rem 2.25rem;
+    border-top: 1px solid var(--border-dark);
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  .footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+
+  .footer-sub {
+    margin-top: 0.9rem;
+    font-size: 0.88rem;
+    max-width: 36ch;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .f-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    margin-bottom: 0.85rem;
+  }
+
+  .footer-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    font-size: 0.9rem;
+  }
+
+  .footer-links a {
+    color: #e2e8f0;
+    transition: color 0.2s ease;
+  }
+
+  .footer-links a:hover {
+    color: var(--gold-bright);
+  }
+
+  .f-social {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    padding-top: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 768px) {
+    .footer-top {
+      flex-direction: column;
+    }
+    .footer-links {
+      gap: 2rem;
+    }
+  }
+</style>

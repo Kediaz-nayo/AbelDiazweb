@@ -1,0 +1,164 @@
+---
+import '../styles/global.css';
+import { SITE } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogImagePath?: string;
+  hideFloatingWhatsApp?: boolean;
+}
+
+const {
+  title = SITE.metaTitle,
+  description = SITE.metaDescription,
+  canonicalPath = '/',
+  ogImagePath = '/og-image.png',
+  hideFloatingWhatsApp = false,
+} = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, SITE.url).toString();
+const ogImageUrl = new URL(ogImagePath, SITE.url).toString();
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.name,
+  jobTitle: SITE.role,
+  description: SITE.metaDescription,
+  url: SITE.url,
+  email: `mailto:${SITE.contact.email}`,
+  telephone: SITE.contact.phoneDisplay,
+  sameAs: [SITE.contact.instagramUrl, SITE.contact.linkedinUrl],
+  areaServed: ['MX', 'US'],
+};
+---
+
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#090C12" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.name} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph / WhatsApp / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:site_name" content={`${SITE.name} — ${SITE.role}`} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Fonts: Plus Jakarta Sans (architectural modern) + Instrument Serif (italic editorial accent) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </head>
+  <body>
+    <a href="#contenido" class="skip-link">Ir al contenido principal</a>
+    <slot />
+
+    {!hideFloatingWhatsApp && (
+      <a
+        href={`https://wa.me/${SITE.contact.phoneRaw}?text=${encodeURIComponent(SITE.contact.whatsappDefaultMessage)}`}
+        class="floating-wa"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Escribir a Abel Díaz por WhatsApp"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+          <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a4 4 0 0 1 -4 -4v-1a.5 .5 0 0 0 -1 0v1" />
+        </svg>
+        <span>WhatsApp</span>
+      </a>
+    )}
+
+    <script>
+      import Lenis from 'lenis';
+      import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReduced) {
+        const lenis = new Lenis({
+          duration: 1.15,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+        });
+
+        lenis.on('scroll', ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+          lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+
+        // Smooth anchor navigation with Lenis
+        document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener('click', (e) => {
+            const href = anchor.getAttribute('href');
+            if (!href || href === '#') return;
+            const target = document.querySelector(href);
+            if (target) {
+              e.preventDefault();
+              lenis.scrollTo(target as HTMLElement, { offset: -24 });
+            }
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .floating-wa {
+    display: none;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 60;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.78rem 1.15rem;
+    border-radius: 999px;
+    background-color: var(--bg-obsidian);
+    color: #ffffff;
+    border: 1px solid rgba(214, 181, 113, 0.35);
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+  }
+
+  @media (max-width: 860px) {
+    .floating-wa {
+      display: inline-flex;
+    }
+  }
+</style>

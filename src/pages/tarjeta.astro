@@ -1,0 +1,288 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icons from '../components/Icons.astro';
+import abelPortrait from '../assets/abeldiaz.jpeg';
+import { SITE, buildWhatsAppUrl } from '../data/site';
+---
+
+<BaseLayout
+  title={`Tarjeta digital — ${SITE.name}`}
+  description={`Contacto directo, redes sociales y servicios de ${SITE.name}, ${SITE.role}.`}
+  canonicalPath="/tarjeta"
+  hideFloatingWhatsApp={true}
+>
+  <main id="contenido" class="card-page" data-theme="dark">
+    <div class="card-glow" aria-hidden="true"></div>
+
+    <div class="card-shell">
+      <header class="card-top">
+        <div class="card-brand">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <rect width="64" height="64" rx="14" fill="rgba(214,181,113,0.12)" stroke="rgba(214,181,113,0.45)" stroke-width="2" />
+            <path d="M32 11L49 18V31.5C49 42.6 41.5 50.8 32 54C22.5 50.8 15 42.6 15 31.5V18L32 11Z" stroke="#D6B571" stroke-width="2.6" stroke-linejoin="round" />
+            <path d="M23 42L32 21L41 42" stroke="#D6B571" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M27.5 42L32 32.5L36.5 42" fill="#D6B571" />
+          </svg>
+          <span>ABEL DÍAZ</span>
+        </div>
+
+        <div class="card-profile">
+          <Image
+            src={abelPortrait}
+            alt="Abel Díaz"
+            width={220}
+            height={220}
+            loading="eager"
+            class="profile-avatar"
+          />
+          <h1>{SITE.name}</h1>
+          <p class="profile-role">{SITE.role}</p>
+          <p class="profile-loc">{SITE.locations}</p>
+        </div>
+      </header>
+
+      <section class="card-body">
+        <div class="primary-stack">
+          <a
+            href={buildWhatsAppUrl()}
+            class="btn btn-light full"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icons name="whatsapp" size={18} />
+            <span>Escribir por WhatsApp</span>
+          </a>
+
+          <a
+            href={SITE.contact.vcardUrl}
+            download="Abel-Diaz-Asesor.vcf"
+            class="btn btn-ghost-dark full"
+          >
+            <Icons name="contact-card" size={18} />
+            <span>Guardar contacto en mi teléfono</span>
+          </a>
+        </div>
+
+        <div class="links-panel">
+          <a href={`tel:+${SITE.contact.phoneRaw}`} class="panel-row">
+            <span class="row-ico"><Icons name="phone" size={17} /></span>
+            <span class="row-text">Llamar · {SITE.contact.phoneDisplay}</span>
+            <Icons name="arrow-up-right" size={16} />
+          </a>
+
+          <a href={`mailto:${SITE.contact.email}`} class="panel-row">
+            <span class="row-ico"><Icons name="mail" size={17} /></span>
+            <span class="row-text">{SITE.contact.email}</span>
+            <Icons name="arrow-up-right" size={16} />
+          </a>
+
+          <a href={SITE.contact.instagramUrl} target="_blank" rel="noopener noreferrer" class="panel-row">
+            <span class="row-ico"><Icons name="instagram" size={17} /></span>
+            <span class="row-text">Instagram · @{SITE.contact.instagramHandle}</span>
+            <Icons name="arrow-up-right" size={16} />
+          </a>
+
+          <a href={SITE.contact.linkedinUrl} target="_blank" rel="noopener noreferrer" class="panel-row">
+            <span class="row-ico"><Icons name="linkedin" size={17} /></span>
+            <span class="row-text">LinkedIn · Abel Díaz</span>
+            <Icons name="arrow-up-right" size={16} />
+          </a>
+
+          <a href="/" class="panel-row panel-row--last">
+            <span class="row-ico"><Icons name="arrow-right" size={17} /></span>
+            <span class="row-text">Abrir sitio web completo</span>
+            <Icons name="arrow-right" size={16} />
+          </a>
+        </div>
+
+        <div class="qr-panel">
+          <img
+            src="/qr-tarjeta.svg"
+            alt="Código QR de la tarjeta digital de Abel Díaz"
+            width="116"
+            height="116"
+            class="qr-code"
+          />
+          <div>
+            <strong>Comparte esta tarjeta</strong>
+            <p>Escanea el QR para abrir el contacto y servicios desde cualquier celular.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .card-page {
+    position: relative;
+    min-height: 100vh;
+    background: var(--bg-obsidian);
+    color: var(--ink-on-dark);
+    padding: clamp(1.25rem, 4vw, 3rem) 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .card-glow {
+    position: absolute;
+    top: -180px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 680px;
+    height: 460px;
+    background: radial-gradient(circle, rgba(214, 181, 113, 0.16) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .card-shell {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 460px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, #121826 0%, #0b0f17 100%);
+    border: 1px solid rgba(214, 181, 113, 0.25);
+    box-shadow: 0 36px 80px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+  }
+
+  .card-top {
+    padding: 1.5rem 1.75rem 1.75rem;
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  .card-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--gold-bright);
+  }
+
+  .card-profile {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 15%;
+    margin-inline: auto;
+    border: 2px solid var(--gold-bright);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-profile h1 {
+    margin-top: 1rem;
+    font-size: 1.85rem;
+    color: #ffffff;
+  }
+
+  .profile-role {
+    margin-top: 0.25rem;
+    font-size: 0.92rem;
+    color: var(--gold-bright);
+    font-weight: 500;
+  }
+
+  .profile-loc {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--ink-on-dark-muted);
+  }
+
+  .card-body {
+    padding: 1.5rem 1.75rem 1.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .primary-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .full {
+    width: 100%;
+  }
+
+  .links-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-dark);
+    border-radius: 18px;
+    padding-inline: 1rem;
+  }
+
+  .panel-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--border-dark);
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    transition: color 0.2s ease;
+  }
+
+  .panel-row--last {
+    border-bottom: none;
+  }
+
+  .panel-row:hover {
+    color: var(--gold-bright);
+  }
+
+  .row-ico {
+    color: var(--gold-bright);
+    flex-shrink: 0;
+  }
+
+  .row-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .qr-panel {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-dark);
+  }
+
+  .qr-code {
+    width: 96px;
+    height: 96px;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 6px;
+    flex-shrink: 0;
+  }
+
+  .qr-panel strong {
+    display: block;
+    font-size: 0.96rem;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+  }
+
+  .qr-panel p {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--ink-on-dark-muted);
+  }
+</style>

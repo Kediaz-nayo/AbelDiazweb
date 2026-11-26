@@ -1,0 +1,309 @@
+---
+import Icons from './Icons.astro';
+import { buildWhatsAppUrl } from '../data/site';
+
+interface Props {
+  isHome?: boolean;
+}
+
+const { isHome = true } = Astro.props;
+const prefix = isHome ? '' : '/';
+
+const navLinks = [
+  { href: `${prefix}#acerca`, label: 'Acerca' },
+  { href: `${prefix}#servicios`, label: 'Servicios' },
+  { href: `${prefix}#proceso`, label: 'Cómo trabajo' },
+  { href: `${prefix}#contacto`, label: 'Contacto' },
+];
+---
+
+<header class="floating-header" id="siteHeader">
+  <div class="header-pill" id="headerPill">
+    <a href="/" class="brand" aria-label="Abel Díaz — Inicio">
+      <svg width="30" height="30" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#090C12" />
+        <path
+          d="M32 11L49 18V31.5C49 42.6 41.5 50.8 32 54C22.5 50.8 15 42.6 15 31.5V18L32 11Z"
+          stroke="#D6B571"
+          stroke-width="2.6"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M23 42L32 21L41 42"
+          stroke="#D6B571"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path d="M27.5 42L32 32.5L36.5 42" fill="#D6B571" />
+      </svg>
+      <span class="brand-word">Abel Díaz</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Navegación principal">
+      {navLinks.map((item) => (
+        <a href={item.href} class="nav-item">{item.label}</a>
+      ))}
+      <a href="/tarjeta" class="nav-item">Tarjeta</a>
+    </nav>
+
+    <div class="nav-right">
+      <a
+        href={buildWhatsAppUrl()}
+        class="nav-cta"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icons name="whatsapp" size={16} />
+        <span>WhatsApp</span>
+      </a>
+
+      <button
+        type="button"
+        class="menu-btn"
+        id="mobileMenuToggle"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="mobileDrawer"
+      >
+        <span class="icon-open"><Icons name="menu" size={20} /></span>
+        <span class="icon-close"><Icons name="close" size={20} /></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-drawer" id="mobileDrawer" hidden>
+    <nav class="mobile-nav" aria-label="Menú móvil">
+      {navLinks.map((item) => (
+        <a href={item.href} class="mobile-link">{item.label}</a>
+      ))}
+      <a href="/tarjeta" class="mobile-link">Tarjeta digital</a>
+    </nav>
+    <a
+      href={buildWhatsAppUrl()}
+      class="btn btn-whatsapp mobile-wa"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Icons name="whatsapp" size={18} />
+      <span>Escribir por WhatsApp</span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .floating-header {
+    position: fixed;
+    top: 16px;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding-inline: var(--gutter);
+    pointer-events: none;
+  }
+
+  .header-pill {
+    pointer-events: auto;
+    max-width: 1120px;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.5rem 0.6rem 0.5rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.84);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(11, 17, 28, 0.08);
+    box-shadow: 0 12px 34px rgba(9, 12, 18, 0.08);
+    transition:
+      background-color 0.35s var(--ease-out-expo),
+      border-color 0.35s var(--ease-out-expo),
+      color 0.35s var(--ease-out-expo),
+      box-shadow 0.35s var(--ease-out-expo);
+  }
+
+  .header-pill.is-dark {
+    background: rgba(15, 20, 30, 0.78);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+    color: var(--ink-on-dark);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 700;
+    font-size: 0.98rem;
+    letter-spacing: -0.02em;
+    color: var(--ink-primary);
+    transition: color 0.3s ease;
+  }
+
+  .header-pill.is-dark .brand {
+    color: var(--ink-on-dark);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+  }
+
+  .nav-item {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--ink-secondary);
+    transition: color 0.2s ease;
+  }
+
+  .nav-item:hover {
+    color: var(--ink-primary);
+  }
+
+  .header-pill.is-dark .nav-item {
+    color: var(--ink-on-dark-muted);
+  }
+
+  .header-pill.is-dark .nav-item:hover {
+    color: #ffffff;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.62rem 1.15rem;
+    border-radius: 999px;
+    background: var(--bg-obsidian);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: transform 0.25s var(--ease-out-expo), background-color 0.25s ease;
+  }
+
+  .nav-cta:hover {
+    transform: translateY(-1px);
+    background: #1a2438;
+  }
+
+  .header-pill.is-dark .nav-cta {
+    background: #ffffff;
+    color: var(--bg-obsidian);
+  }
+
+  .menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--border-light-strong);
+    color: var(--ink-primary);
+  }
+
+  .header-pill.is-dark .menu-btn {
+    border-color: var(--border-dark-strong);
+    color: #ffffff;
+  }
+
+  .menu-btn .icon-close { display: none; }
+  .menu-btn[aria-expanded='true'] .icon-open { display: none; }
+  .menu-btn[aria-expanded='true'] .icon-close { display: inline-flex; }
+
+  .mobile-drawer {
+    pointer-events: auto;
+    max-width: 1120px;
+    margin: 10px auto 0;
+    padding: 1.25rem;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 24px 50px rgba(9, 12, 18, 0.16);
+  }
+
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+
+  .mobile-link {
+    padding: 0.9rem 0.25rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink-primary);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .mobile-wa {
+    width: 100%;
+  }
+
+  @media (max-width: 860px) {
+    .nav-links,
+    .nav-cta {
+      display: none;
+    }
+
+    .menu-btn {
+      display: inline-flex;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('mobileMenuToggle');
+  const drawer = document.getElementById('mobileDrawer');
+  const pill = document.getElementById('headerPill');
+
+  if (toggle && drawer) {
+    const close = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      drawer.hidden = true;
+    };
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      if (open) close();
+      else {
+        toggle.setAttribute('aria-expanded', 'true');
+        drawer.hidden = false;
+      }
+    });
+
+    drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  }
+
+  // Automatically adapt floating header pill over dark obsidian chapters
+  if (pill) {
+    const darkSections = document.querySelectorAll<HTMLElement>('[data-theme="dark"]');
+    if (darkSections.length > 0) {
+      const updateHeaderTheme = () => {
+        const y = 44; // vertical center of floating pill
+        let onDark = false;
+        darkSections.forEach((sec) => {
+          const rect = sec.getBoundingClientRect();
+          if (rect.top <= y && rect.bottom >= y) {
+            onDark = true;
+          }
+        });
+        pill.classList.toggle('is-dark', onDark);
+      };
+
+      window.addEventListener('scroll', updateHeaderTheme, { passive: true });
+      updateHeaderTheme();
+    }
+  }
+</script>

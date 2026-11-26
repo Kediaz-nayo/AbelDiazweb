@@ -1,0 +1,465 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import Icons from '../../components/Icons.astro';
+import archSanctuary from '../../assets/arch-sanctuary.jpg';
+import archCourtyard from '../../assets/arch-courtyard.jpg';
+import archHorizon from '../../assets/arch-horizon.jpg';
+import archInterior from '../../assets/arch-interior.jpg';
+import { SITE, buildWhatsAppUrl, type ServiceItem } from '../../data/site';
+
+export function getStaticPaths() {
+  return SITE.services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+interface Props {
+  service: ServiceItem;
+}
+
+const { service } = Astro.props;
+const otherServices = SITE.services.filter((item) => item.slug !== service.slug);
+
+const heroImages: Record<string, ImageMetadata> = {
+  'gastos-medicos': archSanctuary,
+  'vida-e-incapacidad': archCourtyard,
+  'plan-de-retiro': archHorizon,
+  'ahorro-y-metas': archInterior,
+  'auto-y-hogar': archCourtyard,
+  'asesoria-patrimonial': archHorizon,
+};
+
+const heroImg = heroImages[service.slug] ?? archInterior;
+---
+
+<BaseLayout
+  title={`${service.shortTitle} — ${SITE.name}`}
+  description={service.summary}
+  canonicalPath={`/servicios/${service.slug}`}
+>
+  <SiteHeader isHome={false} />
+
+  <main id="contenido">
+    <section class="srv-hero">
+      <div class="container">
+        <a href="/#servicios" class="back-pill">
+          <Icons name="arrow-left" size={15} />
+          <span>Todas las coberturas</span>
+        </a>
+
+        <div class="srv-hero-grid">
+          <div>
+            <span class="eyebrow">{service.category}</span>
+            <h1>{service.shortTitle}</h1>
+            <p class="srv-intro">{service.detailIntro}</p>
+
+            <div class="srv-actions">
+              <a
+                href={buildWhatsAppUrl(service.whatsappMessage)}
+                class="btn btn-obsidian"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icons name="whatsapp" size={18} />
+                <span>Preguntar por WhatsApp</span>
+              </a>
+
+              <a
+                href={`mailto:${SITE.contact.email}?subject=${encodeURIComponent(`Consulta: ${service.shortTitle}`)}`}
+                class="btn btn-outline"
+              >
+                <Icons name="mail" size={18} />
+                <span>Enviar correo</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="srv-hero-media">
+            <Image
+              src={heroImg}
+              alt={service.shortTitle}
+              width={900}
+              height={680}
+              loading="eager"
+              class="srv-img"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-details">
+      <div class="container detail-grid">
+        <div class="detail-card">
+          <span class="eyebrow">Alcance</span>
+          <h2>Qué protege y cómo ayuda</h2>
+          <ul>
+            {service.whatItProtects.map((point) => (
+              <li>
+                <span class="check-dot" aria-hidden="true"><Icons name="check" size={15} /></span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="detail-card">
+          <span class="eyebrow">Perfil</span>
+          <h2>Ideal para ti si…</h2>
+          <ul>
+            {service.whoItIsFor.map((point) => (
+              <li>
+                <span class="check-dot" aria-hidden="true"><Icons name="check" size={15} /></span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-faq">
+      <div class="container faq-grid">
+        <div>
+          <span class="eyebrow">Preguntas frecuentes</span>
+          <h2>Dudas comunes <span class="serif-accent">resueltas claro.</span></h2>
+        </div>
+
+        <div class="faq-list">
+          {service.faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.question}</summary>
+              <p>{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-cta" data-theme="dark">
+      <div class="container srv-cta-inner">
+        <div>
+          <span class="eyebrow eyebrow-gold">Asesoría sin costo</span>
+          <h2>¿Revisamos opciones de {service.shortTitle.toLowerCase()}?</h2>
+          <p>Te explico coberturas, costos reales y deducibles sin presión comercial.</p>
+        </div>
+
+        <div class="srv-cta-btns">
+          <a
+            href={buildWhatsAppUrl(service.whatsappMessage)}
+            class="btn btn-light"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icons name="whatsapp" size={18} />
+            <span>Hablar con Abel</span>
+          </a>
+          <a href={SITE.contact.vcardUrl} download="Abel-Diaz-Asesor.vcf" class="btn btn-ghost-dark">
+            <Icons name="contact-card" size={18} />
+            <span>Guardar contacto</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-related">
+      <div class="container">
+        <h2>Otras coberturas</h2>
+        <div class="related-grid">
+          {otherServices.map((item) => (
+            <a href={`/servicios/${item.slug}`} class="related-card">
+              <span>{item.category}</span>
+              <strong>{item.shortTitle}</strong>
+              <Icons name="arrow-up-right" size={18} />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  .srv-hero {
+    padding-top: clamp(6.75rem, 11vw, 9rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .back-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    margin-bottom: 2rem;
+    transition: all 0.2s ease;
+  }
+
+  .back-pill:hover {
+    color: var(--ink-primary);
+    border-color: var(--ink-primary);
+  }
+
+  .srv-hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .srv-hero-grid h1 {
+    margin-top: 1rem;
+    font-size: clamp(2.4rem, 4.8vw, 4.1rem);
+    line-height: 1.03;
+  }
+
+  .srv-intro {
+    margin-top: 1.35rem;
+    font-size: 1.08rem;
+    line-height: 1.72;
+    color: var(--ink-secondary);
+    max-width: 52ch;
+  }
+
+  .srv-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .srv-hero-media {
+    border-radius: 26px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3.2;
+    box-shadow: 0 28px 65px rgba(9, 12, 18, 0.14);
+  }
+
+  .srv-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .srv-details {
+    padding-block: clamp(3rem, 6vw, 5.5rem);
+    background: var(--bg-travertine);
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .detail-card {
+    background: var(--bg-white);
+    border-radius: 24px;
+    padding: clamp(1.75rem, 3.5vw, 2.75rem);
+    border: 1px solid var(--border-light);
+  }
+
+  .detail-card h2 {
+    margin-top: 0.85rem;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .detail-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .detail-card li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--ink-secondary);
+  }
+
+  .check-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(169, 131, 58, 0.14);
+    color: var(--gold);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .srv-faq {
+    padding-block: clamp(4rem, 7vw, 6.5rem);
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+
+  .faq-grid h2 {
+    margin-top: 0.9rem;
+    font-size: clamp(1.9rem, 3.2vw, 2.75rem);
+    line-height: 1.1;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .faq-item {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: 18px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: 1.06rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary::after {
+    content: '+';
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--gold);
+  }
+
+  .faq-item[open] summary::after {
+    content: '−';
+  }
+
+  .faq-item p {
+    margin-top: 0.9rem;
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: var(--ink-secondary);
+  }
+
+  .srv-cta {
+    background: var(--bg-obsidian);
+    color: var(--ink-on-dark);
+    padding-block: clamp(4rem, 7vw, 6rem);
+  }
+
+  .eyebrow-gold {
+    color: var(--gold-bright);
+  }
+
+  .srv-cta-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .srv-cta-inner h2 {
+    margin-top: 0.9rem;
+    color: #ffffff;
+    font-size: clamp(1.85rem, 3.2vw, 2.85rem);
+    max-width: 24ch;
+    line-height: 1.1;
+  }
+
+  .srv-cta-inner p {
+    margin-top: 0.85rem;
+    color: var(--ink-on-dark-muted);
+  }
+
+  .srv-cta-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .srv-related {
+    padding-block: clamp(3.5rem, 6vw, 5.5rem);
+  }
+
+  .srv-related h2 {
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+  }
+
+  .related-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: 18px;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    transition: transform 0.25s var(--ease-out-expo), border-color 0.25s ease;
+  }
+
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--ink-primary);
+  }
+
+  .related-card span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .related-card strong {
+    font-size: 1.08rem;
+    color: var(--ink-primary);
+  }
+
+  @media (max-width: 900px) {
+    .srv-hero-grid,
+    .detail-grid,
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .srv-actions .btn,
+    .srv-cta-btns .btn {
+      width: 100%;
+    }
+  }
+</style>
