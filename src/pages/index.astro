@@ -1,45 +1,845 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import ContentBlock from '../components/ContentBlock.astro';
-import Testimonios from '../components/Testimonios.astro';
-import Servicios from '../components/Servicios.astro';
-import Contacto from '../components/Contacto.astro';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Icons from '../components/Icons.astro';
+import abelPortrait from '../assets/abeldiaz.jpeg';
+import { SITE, buildWhatsAppUrl } from '../data/site';
 ---
-<Layout 
-	title="Asesor Financiero y Patrimonial" 
-	description="Hola, soy Abel Díaz. Acompaño a personas y familias a tomar mejores decisiones financieras, proteger su patrimonio y construir tranquilidad a largo plazo, con estrategia y claridad."
+
+<BaseLayout
+  title={SITE.metaTitle}
+  description={SITE.metaDescription}
+  canonicalPath="/"
 >
-    <Header />
-	<main>
-		<Hero />
-		<ContentBlock />
-		<Servicios />
-		<Testimonios />
-		<Contacto />
-	</main>
-</Layout>
+  <SiteHeader isHome={true} />
+
+  <main id="contenido">
+    <!-- 1. HERO ASIMÉTRICO EDITORIAL -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy" data-reveal>
+          <p class="hero-role">{SITE.role}</p>
+          <h1>{SITE.hero.title}</h1>
+          <p class="lead hero-lead">{SITE.hero.lead}</p>
+
+          <div class="hero-actions">
+            <a
+              href={buildWhatsAppUrl()}
+              class="btn btn-whatsapp"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icons name="whatsapp" size={18} />
+              <span>Escribir por WhatsApp</span>
+            </a>
+
+            <a
+              href={SITE.contact.vcardUrl}
+              download="Abel-Diaz-Asesor.vcf"
+              class="btn btn-secondary"
+            >
+              <Icons name="contact-card" size={18} />
+              <span>Guardar contacto</span>
+            </a>
+          </div>
+
+          <div class="hero-meta">
+            <span>{SITE.locations}</span>
+            <span class="meta-sep" aria-hidden="true">·</span>
+            <a href="/tarjeta" class="meta-link">
+              <Icons name="qr" size={15} />
+              <span>Tarjeta digital</span>
+            </a>
+          </div>
+        </div>
+
+        <figure class="hero-figure" data-reveal data-delay="120">
+          <div class="portrait-frame">
+            <Image
+              src={abelPortrait}
+              alt="Retrato de Abel Díaz, asesor patrimonial y de seguros"
+              width={720}
+              height={840}
+              loading="eager"
+              fetchpriority="high"
+              class="portrait-img"
+            />
+          </div>
+          <figcaption class="portrait-caption">
+            <span>{SITE.hero.portraitCaption}</span>
+            <span class="caption-phone">{SITE.contact.phoneDisplay}</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 2. CREDENCIALES Y ASEGURADORAS (LEDGER EDITORIAL) -->
+    <section class="credentials-band" aria-label="Credenciales y cobertura">
+      <div class="container">
+        <div class="credentials-row">
+          <div class="credential-item">
+            <span class="credential-label">{SITE.credentials.cedulaLabel}</span>
+            <span class="credential-value">{SITE.credentials.cedulaValue}</span>
+          </div>
+          <div class="credential-item">
+            <span class="credential-label">{SITE.credentials.coverageLabel}</span>
+            <span class="credential-value">{SITE.credentials.coverageValue}</span>
+          </div>
+          <div class="credential-item">
+            <span class="credential-label">{SITE.credentials.experienceLabel}</span>
+            <span class="credential-value">{SITE.credentials.experienceValue}</span>
+          </div>
+        </div>
+
+        <div class="insurers-strip">
+          <p class="insurers-note">{SITE.insurersNote}</p>
+          <ul class="insurers-list" aria-label="Aseguradoras">
+            {SITE.insurers.map((name) => (
+              <li class="insurer-name">{name}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ACERCA DE ABEL -->
+    <section id="acerca" class="section">
+      <div class="container about-grid">
+        <div class="about-heading" data-reveal>
+          <span class="section-kicker">Acerca de mí</span>
+          <h2>{SITE.about.heading}</h2>
+        </div>
+
+        <div class="about-body" data-reveal data-delay="100">
+          {SITE.about.paragraphs.map((paragraph) => (
+            <p class="about-paragraph">{paragraph}</p>
+          ))}
+
+          <div class="principles-list">
+            {SITE.about.principles.map((item) => (
+              <div class="principle-item">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SERVICIOS (ÍNDICE EDITORIAL CON PÁGINAS COMPARTIBLES) -->
+    <section id="servicios" class="section section-linen">
+      <div class="container">
+        <div class="section-intro" data-reveal>
+          <span class="section-kicker">Servicios</span>
+          <h2>Soluciones pensadas para cada etapa de tu vida.</h2>
+          <p class="lead">
+            Puedes explorar el detalle de cada cobertura o escribirme directamente para revisar qué se adapta mejor a tu situación actual.
+          </p>
+        </div>
+
+        <div class="services-ledger">
+          {SITE.services.map((service, index) => (
+            <article class="service-entry" data-reveal data-delay={String((index % 2) * 80)}>
+              <div class="service-entry-top">
+                <span class="service-category">{service.category}</span>
+                <h3>
+                  <a href={`/servicios/${service.slug}`} class="service-title-link">
+                    {service.title}
+                  </a>
+                </h3>
+                <p class="service-summary">{service.summary}</p>
+              </div>
+
+              <div class="service-actions">
+                <a href={`/servicios/${service.slug}`} class="text-link">
+                  <span>Ver detalle</span>
+                  <Icons name="arrow-right" size={16} />
+                </a>
+                <a
+                  href={buildWhatsAppUrl(service.whatsappMessage)}
+                  class="service-wa-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icons name="whatsapp" size={15} />
+                  <span>Consultar</span>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CÓMO ES UNA ASESORÍA CONMIGO -->
+    <section id="proceso" class="section">
+      <div class="container">
+        <div class="section-intro" data-reveal>
+          <span class="section-kicker">Forma de trabajo</span>
+          <h2>{SITE.process.heading}</h2>
+          <p class="lead">{SITE.process.intro}</p>
+        </div>
+
+        <div class="process-grid">
+          {SITE.process.steps.map((step, index) => (
+            <div class="process-step" data-reveal data-delay={String(index * 90)}>
+              <span class="step-label">{step.label}</span>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. TESTIMONIOS EDITORIALES -->
+    <section id="testimonios" class="section section-linen">
+      <div class="container">
+        <div class="section-intro" data-reveal>
+          <span class="section-kicker">Confianza</span>
+          <h2>{SITE.testimonials.heading}</h2>
+        </div>
+
+        <div class="testimonials-grid">
+          {SITE.testimonials.items.map((item, index) => (
+            <blockquote class="testimonial-quote" data-reveal data-delay={String(index * 90)}>
+              <p class="quote-text">“{item.quote}”</p>
+              <footer class="quote-footer">
+                <cite class="quote-author">{item.author}</cite>
+                <span class="quote-context">{item.context}</span>
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+
+        <p class="placeholder-footnote">{SITE.testimonials.note}</p>
+      </div>
+    </section>
+
+    <!-- 7. CONTACTO Y REDES (BANDA EDITORIAL NAVY) -->
+    <section id="contacto" class="section section-dark contact-band">
+      <div class="container contact-grid">
+        <div class="contact-main" data-reveal>
+          <span class="section-kicker">Contacto directo</span>
+          <h2>{SITE.contactSection.heading}</h2>
+          <p class="contact-lead">{SITE.contactSection.lead}</p>
+
+          <div class="contact-buttons">
+            <a
+              href={buildWhatsAppUrl()}
+              class="btn btn-light"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icons name="whatsapp" size={18} />
+              <span>Agendar por WhatsApp</span>
+            </a>
+
+            <a
+              href={`mailto:${SITE.contact.email}`}
+              class="btn btn-ghost-dark"
+            >
+              <Icons name="mail" size={18} />
+              <span>Enviar correo</span>
+            </a>
+
+            <a
+              href={SITE.contact.vcardUrl}
+              download="Abel-Diaz-Asesor.vcf"
+              class="btn btn-ghost-dark"
+            >
+              <Icons name="contact-card" size={18} />
+              <span>Guardar contacto</span>
+            </a>
+          </div>
+        </div>
+
+        <aside class="contact-card" data-reveal data-delay="120" aria-label="Datos de contacto y redes sociales">
+          <div class="contact-row">
+            <span class="contact-row-label">Teléfono / WhatsApp</span>
+            <a href={`tel:+${SITE.contact.phoneRaw}`} class="contact-row-value">
+              {SITE.contact.phoneDisplay}
+            </a>
+          </div>
+
+          <div class="contact-row">
+            <span class="contact-row-label">Correo electrónico</span>
+            <a href={`mailto:${SITE.contact.email}`} class="contact-row-value">
+              {SITE.contact.email}
+            </a>
+          </div>
+
+          <div class="contact-row">
+            <span class="contact-row-label">Redes sociales</span>
+            <div class="contact-socials">
+              <a
+                href={SITE.contact.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-pill"
+              >
+                <Icons name="instagram" size={16} />
+                <span>@{SITE.contact.instagramHandle}</span>
+                <Icons name="arrow-up-right" size={14} />
+              </a>
+
+              <a
+                href={SITE.contact.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-pill"
+              >
+                <Icons name="linkedin" size={16} />
+                <span>LinkedIn</span>
+                <Icons name="arrow-up-right" size={14} />
+              </a>
+            </div>
+          </div>
+
+          <div class="contact-row contact-row--last">
+            <span class="contact-row-label">Para compartir rápido</span>
+            <a href="/tarjeta" class="tarjeta-link">
+              <Icons name="qr" size={16} />
+              <span>Abrir tarjeta digital y código QR</span>
+              <Icons name="arrow-right" size={15} />
+            </a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
 
 <style>
-	main {
-		overflow-x: hidden;
-	}
-	
-	/* Amélioration de la transition entre sections */
-	main > * {
-		position: relative;
-	}
-	
-	/* Effet de parallaxe subtil pour les sections */
-	main > *:nth-child(even) {
-		transform: translateZ(0);
-	}
-	
-	/* Optimisation pour mobile */
-	@media (max-width: 768px) {
-		main {
-			overflow-x: hidden;
-		}
-	}
+  /* ================= HERO ================= */
+  .hero {
+    padding-block: clamp(2.5rem, 5.5vw, 5rem) clamp(3.5rem, 6vw, 5.5rem);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(2.25rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .hero-role {
+    font-size: 0.925rem;
+    font-weight: 500;
+    color: var(--brass);
+    margin-bottom: 1.1rem;
+  }
+
+  .hero-lead {
+    margin-top: 1.5rem;
+    color: var(--ink-body);
+    max-width: 54ch;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-hairline);
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+  }
+
+  .meta-sep {
+    color: var(--border-strong);
+  }
+
+  .meta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--ink-navy);
+    font-weight: 500;
+    transition: color var(--duration-fast) ease;
+  }
+
+  .meta-link:hover {
+    color: var(--brass);
+  }
+
+  .hero-figure {
+    margin: 0;
+  }
+
+  .portrait-frame {
+    position: relative;
+    aspect-ratio: 4 / 4.7;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-linen);
+    border: 1px solid var(--border-hairline);
+  }
+
+  .portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+  }
+
+  .portrait-caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.825rem;
+    color: var(--ink-muted);
+  }
+
+  .caption-phone {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-navy);
+    font-weight: 500;
+  }
+
+  /* ================= CREDENTIALS & INSURERS ================= */
+  .credentials-band {
+    border-top: 1px solid var(--border-hairline);
+    border-bottom: 1px solid var(--border-hairline);
+    background-color: var(--bg-card);
+    padding-block: 2rem;
+  }
+
+  .credentials-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2.5rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .credential-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .credential-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+  }
+
+  .credential-value {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--ink-navy);
+  }
+
+  .insurers-strip {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.9rem 2rem;
+    padding-top: 1.45rem;
+  }
+
+  .insurers-note {
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+  }
+
+  .insurers-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.75rem;
+  }
+
+  .insurer-name {
+    font-family: var(--font-serif);
+    font-size: 1.02rem;
+    color: var(--ink-body);
+    opacity: 0.86;
+  }
+
+  /* ================= ABOUT ================= */
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .about-paragraph {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--ink-body);
+    margin-bottom: 1.35rem;
+  }
+
+  .principles-list {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--border-hairline);
+  }
+
+  .principle-item {
+    padding-block: 1.35rem;
+    border-bottom: 1px solid var(--border-hairline);
+    display: grid;
+    grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+    gap: 0.75rem 1.75rem;
+    align-items: baseline;
+  }
+
+  .principle-item h3 {
+    font-size: 1.18rem;
+    color: var(--ink-navy);
+  }
+
+  .principle-item p {
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    line-height: 1.6;
+  }
+
+  /* ================= SECTION INTRO ================= */
+  .section-intro {
+    max-width: 680px;
+    margin-bottom: clamp(2.5rem, 5vw, 3.75rem);
+  }
+
+  .section-intro .lead {
+    margin-top: 1rem;
+    color: var(--ink-muted);
+  }
+
+  /* ================= SERVICES LEDGER ================= */
+  .services-ledger {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--border-strong);
+  }
+
+  .service-entry {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.75rem;
+    padding: 2.25rem 2.25rem 2.25rem 0;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .service-entry:nth-child(even) {
+    padding-left: 2.5rem;
+    padding-right: 0;
+    border-left: 1px solid var(--border-hairline);
+  }
+
+  .service-category {
+    display: inline-block;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--brass);
+    margin-bottom: 0.55rem;
+  }
+
+  .service-title-link {
+    transition: color var(--duration-fast) ease;
+  }
+
+  .service-title-link:hover {
+    color: var(--brass);
+  }
+
+  .service-summary {
+    margin-top: 0.75rem;
+    font-size: 0.975rem;
+    line-height: 1.68;
+    color: var(--ink-muted);
+  }
+
+  .service-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .service-wa-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--whatsapp);
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--duration-fast) ease;
+  }
+
+  .service-wa-link:hover {
+    background-color: rgba(31, 110, 67, 0.09);
+  }
+
+  /* ================= PROCESS ================= */
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.25rem;
+  }
+
+  .process-step {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-strong);
+  }
+
+  .step-label {
+    display: block;
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: var(--brass);
+    margin-bottom: 0.65rem;
+  }
+
+  .process-step h3 {
+    margin-bottom: 0.75rem;
+  }
+
+  .process-step p {
+    font-size: 0.96rem;
+    line-height: 1.68;
+    color: var(--ink-muted);
+  }
+
+  /* ================= TESTIMONIALS ================= */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .testimonial-quote {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.85rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-sm);
+  }
+
+  .quote-text {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--ink-navy);
+  }
+
+  .quote-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-hairline);
+  }
+
+  .quote-author {
+    font-style: normal;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink-navy);
+  }
+
+  .quote-context {
+    font-size: 0.825rem;
+    color: var(--ink-muted);
+  }
+
+  .placeholder-footnote {
+    margin-top: 1.5rem;
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    max-width: none;
+  }
+
+  /* ================= CONTACT BAND ================= */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2.25rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+
+  .contact-lead {
+    margin-top: 1.25rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--ink-on-dark-muted);
+    max-width: 52ch;
+  }
+
+  .contact-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+
+  .contact-card {
+    background-color: var(--ink-navy-deep);
+    border: 1px solid var(--border-on-dark);
+    border-radius: var(--radius-sm);
+    padding: 1.75rem 2rem;
+  }
+
+  .contact-row {
+    padding-block: 1.05rem;
+    border-bottom: 1px solid var(--border-on-dark);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .contact-row--last {
+    border-bottom: none;
+    padding-bottom: 0.25rem;
+  }
+
+  .contact-row:first-child {
+    padding-top: 0.25rem;
+  }
+
+  .contact-row-label {
+    font-size: 0.8rem;
+    color: var(--ink-on-dark-muted);
+  }
+
+  .contact-row-value {
+    font-family: var(--font-serif);
+    font-size: 1.22rem;
+    color: var(--ink-on-dark);
+    transition: color var(--duration-fast) ease;
+    word-break: break-word;
+  }
+
+  .contact-row-value:hover {
+    color: var(--brass-soft);
+  }
+
+  .contact-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 0.25rem;
+  }
+
+  .social-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid var(--border-on-dark);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    color: var(--ink-on-dark);
+    transition:
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+
+  .social-pill:hover {
+    border-color: var(--brass-soft);
+    color: var(--brass-soft);
+  }
+
+  .tarjeta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+    font-size: 0.925rem;
+    font-weight: 500;
+    color: var(--brass-soft);
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  .tarjeta-link:hover {
+    opacity: 0.85;
+  }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 960px) {
+    .hero-grid,
+    .about-grid,
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-figure {
+      max-width: 460px;
+    }
+
+    .credentials-row,
+    .process-grid,
+    .testimonials-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .services-ledger {
+      grid-template-columns: 1fr;
+    }
+
+    .service-entry,
+    .service-entry:nth-child(even) {
+      padding: 1.85rem 0;
+      border-left: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .meta-sep {
+      display: none;
+    }
+
+    .hero-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .principle-item {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+
+    .hero-actions .btn,
+    .contact-buttons .btn {
+      width: 100%;
+    }
+
+    .portrait-caption {
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .contact-card {
+      padding: 1.35rem;
+    }
+  }
 </style>

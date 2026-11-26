@@ -1,0 +1,87 @@
+---
+interface Props {
+  variant?: 'light' | 'dark';
+  showRole?: boolean;
+}
+
+const { variant = 'light', showRole = false } = Astro.props;
+const isDark = variant === 'dark';
+---
+
+<span class:list={['brand-mark', { 'brand-mark--dark': isDark }]}>
+  <svg
+    class="brand-shield"
+    width="34"
+    height="34"
+    viewBox="0 0 64 64"
+    fill="none"
+    aria-hidden="true"
+  >
+    <rect
+      width="64"
+      height="64"
+      rx="10"
+      fill={isDark ? '#1B304D' : '#132238'}
+    />
+    <path
+      d="M32 10L50 17.5V31.5C50 43.2 42.1 51.6 32 55C21.9 51.6 14 43.2 14 31.5V17.5L32 10Z"
+      stroke="#C7A661"
+      stroke-width="2.6"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M22.5 42.5L32 20.5L41.5 42.5"
+      stroke="#C7A661"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path d="M27.2 42.5L32 32.5L36.8 42.5" fill="#C7A661" />
+  </svg>
+  <span class="brand-text">
+    <span class="brand-name">Abel Díaz</span>
+    {showRole && <span class="brand-role">Asesor Patrimonial y de Seguros</span>}
+  </span>
+</span>
+
+<style>
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.72rem;
+    color: var(--ink-navy);
+  }
+
+  .brand-mark--dark {
+    color: var(--ink-on-dark);
+  }
+
+  .brand-shield {
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .brand-name {
+    font-family: var(--font-serif);
+    font-size: 1.28rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-role {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    margin-top: 0.15rem;
+  }
+
+  .brand-mark--dark .brand-role {
+    color: var(--ink-on-dark-muted);
+  }
+</style>

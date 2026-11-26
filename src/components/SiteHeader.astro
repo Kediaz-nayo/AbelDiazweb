@@ -1,0 +1,221 @@
+---
+import BrandMark from './BrandMark.astro';
+import Icons from './Icons.astro';
+import { buildWhatsAppUrl } from '../data/site';
+
+interface Props {
+  isHome?: boolean;
+}
+
+const { isHome = true } = Astro.props;
+const prefix = isHome ? '' : '/';
+
+const navLinks = [
+  { href: `${prefix}#acerca`, label: 'Acerca' },
+  { href: `${prefix}#servicios`, label: 'Servicios' },
+  { href: `${prefix}#proceso`, label: 'Cómo trabajo' },
+  { href: `${prefix}#contacto`, label: 'Contacto' },
+];
+---
+
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <a href="/" class="brand-link" aria-label="Abel Díaz — Inicio">
+      <BrandMark />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Navegación principal">
+      {navLinks.map((item) => (
+        <a href={item.href} class="nav-link">{item.label}</a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <a
+        href={buildWhatsAppUrl()}
+        class="btn btn-primary header-cta"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icons name="whatsapp" size={17} />
+        <span>WhatsApp</span>
+      </a>
+
+      <button
+        type="button"
+        class="mobile-toggle"
+        id="mobileMenuToggle"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+      >
+        <span class="icon-open"><Icons name="menu" size={22} /></span>
+        <span class="icon-close"><Icons name="close" size={22} /></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-drawer" id="mobileMenu" hidden>
+    <div class="container mobile-drawer-inner">
+      <nav aria-label="Menú móvil" class="mobile-nav-list">
+        {navLinks.map((item) => (
+          <a href={item.href} class="mobile-nav-link">{item.label}</a>
+        ))}
+        <a href="/tarjeta" class="mobile-nav-link">Tarjeta digital</a>
+      </nav>
+      <a
+        href={buildWhatsAppUrl()}
+        class="btn btn-whatsapp mobile-cta"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icons name="whatsapp" size={18} />
+        <span>Escribir por WhatsApp</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--bg-paper);
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 76px;
+  }
+
+  .brand-link {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink-body);
+    padding-block: 0.25rem;
+    transition: color var(--duration-fast) ease;
+  }
+
+  .nav-link:hover {
+    color: var(--brass);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-cta {
+    min-height: 40px;
+    padding: 0.55rem 1.05rem;
+    font-size: 0.875rem;
+  }
+
+  .mobile-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-hairline);
+    color: var(--ink-navy);
+  }
+
+  .mobile-toggle .icon-close {
+    display: none;
+  }
+
+  .mobile-toggle[aria-expanded='true'] .icon-open {
+    display: none;
+  }
+
+  .mobile-toggle[aria-expanded='true'] .icon-close {
+    display: inline-flex;
+  }
+
+  .mobile-drawer {
+    background-color: var(--bg-paper);
+    border-top: 1px solid var(--border-hairline);
+    padding-block: 1.25rem 1.75rem;
+  }
+
+  .mobile-drawer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .mobile-nav-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-nav-link {
+    padding-block: 0.85rem;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    color: var(--ink-navy);
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .mobile-cta {
+    width: 100%;
+  }
+
+  @media (max-width: 860px) {
+    .desktop-nav,
+    .header-cta {
+      display: none;
+    }
+
+    .mobile-toggle {
+      display: inline-flex;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('mobileMenuToggle');
+  const drawer = document.getElementById('mobileMenu');
+
+  if (toggle && drawer) {
+    const closeMenu = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menú');
+      drawer.hidden = true;
+    };
+
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      if (expanded) {
+        closeMenu();
+      } else {
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Cerrar menú');
+        drawer.hidden = false;
+      }
+    });
+
+    drawer.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+  }
+</script>

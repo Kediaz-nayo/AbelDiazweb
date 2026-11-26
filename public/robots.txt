@@ -1,8 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://abeldiaz.pro/sitemap.xml
-
-# Crawl-delay
-Crawl-delay: 1
+Sitemap: https://abeldiazasesor.netlify.app/sitemap-index.xml
