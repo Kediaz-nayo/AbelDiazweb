@@ -1,11 +1,39 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Icons from '../components/Icons.astro';
 import abelPortrait from '../assets/abeldiaz.jpeg';
+import archInterior from '../assets/arch-interior.jpg';
+import archCourtyard from '../assets/arch-courtyard.jpg';
+import archSanctuary from '../assets/arch-sanctuary.jpg';
+import archHorizon from '../assets/arch-horizon.jpg';
 import { SITE, buildWhatsAppUrl } from '../data/site';
+
+// Pre-optimize architectural preview photos for the cursor-following hover reveal
+const [imgSanctuary, imgCourtyard, imgHorizon, imgInterior] = await Promise.all([
+  getImage({ src: archSanctuary, width: 720, format: 'webp' }),
+  getImage({ src: archCourtyard, width: 720, format: 'webp' }),
+  getImage({ src: archHorizon, width: 720, format: 'webp' }),
+  getImage({ src: archInterior, width: 720, format: 'webp' }),
+]);
+
+const serviceImages: Record<string, string> = {
+  'gastos-medicos': imgSanctuary.src,
+  'vida-e-incapacidad': imgCourtyard.src,
+  'plan-de-retiro': imgHorizon.src,
+  'ahorro-y-metas': imgInterior.src,
+  'auto-y-hogar': imgCourtyard.src,
+  'asesoria-patrimonial': imgHorizon.src,
+};
+
+const processPhotos = [archInterior, archSanctuary, archHorizon];
+
+const manifestoWords =
+  'No vendo pólizas en serie. Acompaño a personas, familias y empresarios en México y Estados Unidos a tomar decisiones financieras con claridad, respaldo real y trato directo.'.split(
+    ' '
+  );
 ---
 
 <BaseLayout
@@ -16,18 +44,37 @@ import { SITE, buildWhatsAppUrl } from '../data/site';
   <SiteHeader isHome={true} />
 
   <main id="contenido">
-    <!-- 1. HERO ASIMÉTRICO EDITORIAL -->
+    <!-- =================================================================== -->
+    <!-- 1. HERO MONUMENTAL + LIENZO ARQUITECTÓNICO EXPANDIBLE AL SCROLL     -->
+    <!-- =================================================================== -->
     <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy" data-reveal>
-          <p class="hero-role">{SITE.role}</p>
-          <h1>{SITE.hero.title}</h1>
-          <p class="lead hero-lead">{SITE.hero.lead}</p>
+      <div class="container hero-top">
+        <div class="hero-meta-row js-hero-fade">
+          <span class="status-pill">
+            <span class="status-dot" aria-hidden="true"></span>
+            Asesor Patrimonial y de Seguros
+          </span>
+          <span class="hero-loc">{SITE.locations}</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="line-mask"><span class="line-inner js-hero-line">Tu patrimonio merece</span></span>
+          <span class="line-mask">
+            <span class="line-inner js-hero-line">
+              claridad, <span class="serif-accent">sin letras chiquitas.</span>
+            </span>
+          </span>
+        </h1>
+
+        <div class="hero-bottom-row js-hero-fade">
+          <p class="hero-lead">
+            Soy <strong>Abel Díaz</strong>. Te ayudo a estructurar tu salud, tu vida, tu retiro y tu patrimonio con transparencia y acompañamiento personal.
+          </p>
 
           <div class="hero-actions">
             <a
               href={buildWhatsAppUrl()}
-              class="btn btn-whatsapp"
+              class="btn btn-obsidian js-magnetic"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -38,129 +85,198 @@ import { SITE, buildWhatsAppUrl } from '../data/site';
             <a
               href={SITE.contact.vcardUrl}
               download="Abel-Diaz-Asesor.vcf"
-              class="btn btn-secondary"
+              class="btn btn-outline js-magnetic"
             >
               <Icons name="contact-card" size={18} />
               <span>Guardar contacto</span>
             </a>
           </div>
+        </div>
+      </div>
 
-          <div class="hero-meta">
-            <span>{SITE.locations}</span>
-            <span class="meta-sep" aria-hidden="true">·</span>
-            <a href="/tarjeta" class="meta-link">
-              <Icons name="qr" size={15} />
-              <span>Tarjeta digital</span>
+      <!-- Lienzo panorámico que se expande a ancho completo al hacer scroll -->
+      <div class="hero-stage-outer" id="heroStageOuter">
+        <div class="hero-stage" id="heroStage">
+          <Image
+            src={archInterior}
+            alt="Espacio arquitectónico contemporáneo en luz natural"
+            width={1600}
+            height={900}
+            loading="eager"
+            fetchpriority="high"
+            class="hero-stage-img"
+            id="heroStageImg"
+          />
+          <div class="hero-stage-scrim"></div>
+
+          <div class="hero-stage-hud">
+            <div class="advisor-pill">
+              <Image
+                src={abelPortrait}
+                alt="Abel Díaz"
+                width={120}
+                height={120}
+                loading="eager"
+                class="advisor-thumb"
+              />
+              <div>
+                <strong>{SITE.name}</strong>
+                <span>{SITE.contact.phoneDisplay} · @{SITE.contact.instagramHandle}</span>
+              </div>
+            </div>
+
+            <a href="#acerca" class="scroll-cue">
+              <span>Explorar</span>
+              <span class="scroll-line" aria-hidden="true"></span>
             </a>
           </div>
         </div>
+      </div>
+    </section>
 
-        <figure class="hero-figure" data-reveal data-delay="120">
-          <div class="portrait-frame">
+    <!-- =================================================================== -->
+    <!-- 2. MANIFIESTO ILUMINADO PALABRA POR PALABRA AL SCROLL               -->
+    <!-- =================================================================== -->
+    <section class="manifesto-section" id="manifiesto">
+      <div class="container">
+        <span class="eyebrow">Filosofía de trabajo</span>
+        <p class="manifesto-text" id="manifestoText">
+          {manifestoWords.map((word) => (
+            <span class="m-word">{word}{' '}</span>
+          ))}
+        </p>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 3. STICKY SPLIT: RETRATO ANCLADO + PRINCIPIOS + ASEGURADORAS        -->
+    <!-- =================================================================== -->
+    <section class="about-section" id="acerca">
+      <div class="container about-grid">
+        <div class="about-sticky">
+          <div class="portrait-card">
             <Image
               src={abelPortrait}
               alt="Retrato de Abel Díaz, asesor patrimonial y de seguros"
               width={720}
-              height={840}
-              loading="eager"
-              fetchpriority="high"
-              class="portrait-img"
+              height={880}
+              class="portrait-photo"
             />
-          </div>
-          <figcaption class="portrait-caption">
-            <span>{SITE.hero.portraitCaption}</span>
-            <span class="caption-phone">{SITE.contact.phoneDisplay}</span>
-          </figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- 2. CREDENCIALES Y ASEGURADORAS (LEDGER EDITORIAL) -->
-    <section class="credentials-band" aria-label="Credenciales y cobertura">
-      <div class="container">
-        <div class="credentials-row">
-          <div class="credential-item">
-            <span class="credential-label">{SITE.credentials.cedulaLabel}</span>
-            <span class="credential-value">{SITE.credentials.cedulaValue}</span>
-          </div>
-          <div class="credential-item">
-            <span class="credential-label">{SITE.credentials.coverageLabel}</span>
-            <span class="credential-value">{SITE.credentials.coverageValue}</span>
-          </div>
-          <div class="credential-item">
-            <span class="credential-label">{SITE.credentials.experienceLabel}</span>
-            <span class="credential-value">{SITE.credentials.experienceValue}</span>
-          </div>
-        </div>
-
-        <div class="insurers-strip">
-          <p class="insurers-note">{SITE.insurersNote}</p>
-          <ul class="insurers-list" aria-label="Aseguradoras">
-            {SITE.insurers.map((name) => (
-              <li class="insurer-name">{name}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. ACERCA DE ABEL -->
-    <section id="acerca" class="section">
-      <div class="container about-grid">
-        <div class="about-heading" data-reveal>
-          <span class="section-kicker">Acerca de mí</span>
-          <h2>{SITE.about.heading}</h2>
-        </div>
-
-        <div class="about-body" data-reveal data-delay="100">
-          {SITE.about.paragraphs.map((paragraph) => (
-            <p class="about-paragraph">{paragraph}</p>
-          ))}
-
-          <div class="principles-list">
-            {SITE.about.principles.map((item) => (
-              <div class="principle-item">
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
+            <div class="portrait-gradient"></div>
+            <div class="portrait-overlay">
+              <div>
+                <p class="portrait-name">{SITE.name}</p>
+                <p class="portrait-sub">{SITE.credentials.coverageValue}</p>
               </div>
+              <span class="cedula-pill">{SITE.credentials.cedulaLabel}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <span class="eyebrow">Acerca de mí</span>
+          <h2>
+            Un asesor cercano que responde <span class="serif-accent">cuando importa.</span>
+          </h2>
+          <p class="about-intro">
+            {SITE.about.paragraphs[0]}
+          </p>
+          <p class="about-intro">
+            {SITE.about.paragraphs[1]}
+          </p>
+
+          <div class="principles-stack">
+            {SITE.about.principles.map((item, idx) => (
+              <article class="principle-card js-reveal-up">
+                <span class="p-index">0{idx + 1}</span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div class="credentials-grid js-reveal-up">
+            <div class="cred-box">
+              <span>{SITE.credentials.cedulaLabel}</span>
+              <strong>{SITE.credentials.cedulaValue}</strong>
+            </div>
+            <div class="cred-box">
+              <span>{SITE.credentials.coverageLabel}</span>
+              <strong>{SITE.credentials.coverageValue}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banda sutil cinética de aseguradoras (placeholder) -->
+      <div class="insurers-marquee-wrap" aria-label={SITE.insurersNote}>
+        <div class="container">
+          <p class="insurers-caption">{SITE.insurersNote}</p>
+        </div>
+        <div class="marquee-viewport">
+          <div class="marquee-track">
+            {[...SITE.insurers, ...SITE.insurers, ...SITE.insurers].map((insurer) => (
+              <span class="marquee-item">
+                {insurer}
+                <span class="marquee-sep" aria-hidden="true">✦</span>
+              </span>
             ))}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. SERVICIOS (ÍNDICE EDITORIAL CON PÁGINAS COMPARTIBLES) -->
-    <section id="servicios" class="section section-linen">
-      <div class="container">
-        <div class="section-intro" data-reveal>
-          <span class="section-kicker">Servicios</span>
-          <h2>Soluciones pensadas para cada etapa de tu vida.</h2>
-          <p class="lead">
-            Puedes explorar el detalle de cada cobertura o escribirme directamente para revisar qué se adapta mejor a tu situación actual.
+    <!-- =================================================================== -->
+    <!-- 4. CAPÍTULO OBSIDIANA: SERVICIOS CON PREVIEW FLOTANTE AL CURSOR     -->
+    <!-- =================================================================== -->
+    <section class="services-obsidian" id="servicios" data-theme="dark">
+      <div class="obsidian-glow" aria-hidden="true"></div>
+
+      <!-- Vista previa fotográfica flotante (solo escritorio) -->
+      <div class="hover-preview" id="hoverPreview" aria-hidden="true">
+        <img src={imgSanctuary.src} alt="" id="hoverPreviewImg" />
+      </div>
+
+      <div class="container services-inner">
+        <div class="services-head">
+          <div>
+            <span class="eyebrow eyebrow-gold">Coberturas</span>
+            <h2>
+              Soluciones diseñadas <span class="serif-accent">alrededor de tu vida.</span>
+            </h2>
+          </div>
+          <p class="services-sub">
+            Explora cada área para conocer detalles y preguntas frecuentes, o escríbeme directo por WhatsApp.
           </p>
         </div>
 
-        <div class="services-ledger">
+        <div class="services-list" id="servicesList">
           {SITE.services.map((service, index) => (
-            <article class="service-entry" data-reveal data-delay={String((index % 2) * 80)}>
-              <div class="service-entry-top">
-                <span class="service-category">{service.category}</span>
-                <h3>
-                  <a href={`/servicios/${service.slug}`} class="service-title-link">
-                    {service.title}
-                  </a>
-                </h3>
-                <p class="service-summary">{service.summary}</p>
-              </div>
+            <div
+              class="service-row"
+              data-preview-img={serviceImages[service.slug]}
+            >
+              <a href={`/servicios/${service.slug}`} class="service-row-main">
+                <span class="s-num">0{index + 1}</span>
+                <div class="s-text">
+                  <span class="s-cat">{service.category}</span>
+                  <h3>{service.shortTitle}</h3>
+                  <p>{service.summary}</p>
+                </div>
+                <span class="s-arrow" aria-hidden="true">
+                  <Icons name="arrow-up-right" size={22} />
+                </span>
+              </a>
 
-              <div class="service-actions">
-                <a href={`/servicios/${service.slug}`} class="text-link">
-                  <span>Ver detalle</span>
-                  <Icons name="arrow-right" size={16} />
+              <div class="service-row-actions">
+                <a href={`/servicios/${service.slug}`} class="s-detail-link">
+                  Ver ficha completa
                 </a>
                 <a
                   href={buildWhatsAppUrl(service.whatsappMessage)}
-                  class="service-wa-link"
+                  class="s-wa-pill"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -168,146 +284,187 @@ import { SITE, buildWhatsAppUrl } from '../data/site';
                   <span>Consultar</span>
                 </a>
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 5. TARJETAS APILABLES AL SCROLL: CÓMO ES UNA ASESORÍA CONMIGO       -->
+    <!-- =================================================================== -->
+    <section class="process-section" id="proceso">
+      <div class="container">
+        <div class="process-head">
+          <span class="eyebrow">Proceso</span>
+          <h2>
+            Tres pasos claros, <span class="serif-accent">sin presión comercial.</span>
+          </h2>
+        </div>
+
+        <div class="stack-wrap">
+          {SITE.process.steps.map((step, index) => (
+            <article class="stack-card js-stack-card" style={`--stack-idx: ${index};`}>
+              <div class="stack-card-copy">
+                <span class="stack-step">0{index + 1} · {step.label}</span>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+                <a
+                  href={buildWhatsAppUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="stack-cta"
+                >
+                  <span>Empezar conversación</span>
+                  <Icons name="arrow-right" size={16} />
+                </a>
+              </div>
+              <div class="stack-card-media">
+                <Image
+                  src={processPhotos[index]}
+                  alt={step.title}
+                  width={840}
+                  height={600}
+                  class="stack-img"
+                />
+              </div>
             </article>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- 5. CÓMO ES UNA ASESORÍA CONMIGO -->
-    <section id="proceso" class="section">
+    <!-- =================================================================== -->
+    <!-- 6. TESTIMONIOS EN TRAVERTINO                                        -->
+    <!-- =================================================================== -->
+    <section class="testimonials-section" id="testimonios">
       <div class="container">
-        <div class="section-intro" data-reveal>
-          <span class="section-kicker">Forma de trabajo</span>
-          <h2>{SITE.process.heading}</h2>
-          <p class="lead">{SITE.process.intro}</p>
+        <div class="test-head">
+          <span class="eyebrow">Confianza</span>
+          <h2>Lo que valoran quienes ya trabajan conmigo.</h2>
         </div>
 
-        <div class="process-grid">
-          {SITE.process.steps.map((step, index) => (
-            <div class="process-step" data-reveal data-delay={String(index * 90)}>
-              <span class="step-label">{step.label}</span>
-              <h3>{step.title}</h3>
-              <p>{step.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. TESTIMONIOS EDITORIALES -->
-    <section id="testimonios" class="section section-linen">
-      <div class="container">
-        <div class="section-intro" data-reveal>
-          <span class="section-kicker">Confianza</span>
-          <h2>{SITE.testimonials.heading}</h2>
-        </div>
-
-        <div class="testimonials-grid">
-          {SITE.testimonials.items.map((item, index) => (
-            <blockquote class="testimonial-quote" data-reveal data-delay={String(index * 90)}>
-              <p class="quote-text">“{item.quote}”</p>
-              <footer class="quote-footer">
-                <cite class="quote-author">{item.author}</cite>
-                <span class="quote-context">{item.context}</span>
+        <div class="test-grid">
+          {SITE.testimonials.items.map((item) => (
+            <blockquote class="test-card js-reveal-up">
+              <p class="test-quote">“{item.quote}”</p>
+              <footer class="test-footer">
+                <cite>{item.author}</cite>
+                <span>{item.context}</span>
               </footer>
             </blockquote>
           ))}
         </div>
-
-        <p class="placeholder-footnote">{SITE.testimonials.note}</p>
+        <p class="test-note">{SITE.testimonials.note}</p>
       </div>
     </section>
 
-    <!-- 7. CONTACTO Y REDES (BANDA EDITORIAL NAVY) -->
-    <section id="contacto" class="section section-dark contact-band">
-      <div class="container contact-grid">
-        <div class="contact-main" data-reveal>
-          <span class="section-kicker">Contacto directo</span>
-          <h2>{SITE.contactSection.heading}</h2>
-          <p class="contact-lead">{SITE.contactSection.lead}</p>
+    <!-- =================================================================== -->
+    <!-- 7. CIERRE MONUMENTAL + TARJETA METÁLICA 3D INTERACTIVA              -->
+    <!-- =================================================================== -->
+    <section class="contact-finale" id="contacto" data-theme="dark">
+      <div class="finale-glow" aria-hidden="true"></div>
 
-          <div class="contact-buttons">
+      <div class="container finale-grid">
+        <div class="finale-left">
+          <span class="eyebrow eyebrow-gold">Contacto directo</span>
+          <h2 class="finale-title">
+            Hablemos <span class="serif-accent">con calma.</span>
+          </h2>
+          <p class="finale-lead">
+            {SITE.contactSection.lead}
+          </p>
+
+          <div class="finale-ctas">
             <a
               href={buildWhatsAppUrl()}
-              class="btn btn-light"
+              class="btn btn-light js-magnetic"
               target="_blank"
               rel="noopener noreferrer"
             >
               <Icons name="whatsapp" size={18} />
-              <span>Agendar por WhatsApp</span>
-            </a>
-
-            <a
-              href={`mailto:${SITE.contact.email}`}
-              class="btn btn-ghost-dark"
-            >
-              <Icons name="mail" size={18} />
-              <span>Enviar correo</span>
+              <span>Escribir por WhatsApp</span>
             </a>
 
             <a
               href={SITE.contact.vcardUrl}
               download="Abel-Diaz-Asesor.vcf"
-              class="btn btn-ghost-dark"
+              class="btn btn-ghost-dark js-magnetic"
             >
               <Icons name="contact-card" size={18} />
               <span>Guardar contacto</span>
             </a>
           </div>
+
+          <div class="finale-direct">
+            <a href={`tel:+${SITE.contact.phoneRaw}`} class="direct-item">
+              <span>Teléfono</span>
+              <strong>{SITE.contact.phoneDisplay}</strong>
+            </a>
+            <a href={`mailto:${SITE.contact.email}`} class="direct-item">
+              <span>Correo</span>
+              <strong>{SITE.contact.email}</strong>
+            </a>
+            <a
+              href={SITE.contact.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="direct-item"
+            >
+              <span>Instagram</span>
+              <strong>@{SITE.contact.instagramHandle} ↗</strong>
+            </a>
+            <a
+              href={SITE.contact.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="direct-item"
+            >
+              <span>LinkedIn</span>
+              <strong>Abel Díaz ↗</strong>
+            </a>
+          </div>
         </div>
 
-        <aside class="contact-card" data-reveal data-delay="120" aria-label="Datos de contacto y redes sociales">
-          <div class="contact-row">
-            <span class="contact-row-label">Teléfono / WhatsApp</span>
-            <a href={`tel:+${SITE.contact.phoneRaw}`} class="contact-row-value">
-              {SITE.contact.phoneDisplay}
-            </a>
-          </div>
+        <!-- Tarjeta metálica interactiva 3D con brillo especular -->
+        <div class="finale-right">
+          <a href="/tarjeta" class="metal-card-scene" aria-label="Abrir tarjeta digital y código QR de Abel Díaz">
+            <div class="metal-card" id="metalCard">
+              <div class="metal-sheen" id="metalSheen"></div>
+              <div class="metal-top">
+                <div class="metal-logo">
+                  <svg width="34" height="34" viewBox="0 0 64 64" fill="none">
+                    <rect width="64" height="64" rx="14" fill="rgba(214,181,113,0.12)" stroke="rgba(214,181,113,0.4)" stroke-width="2" />
+                    <path d="M32 11L49 18V31.5C49 42.6 41.5 50.8 32 54C22.5 50.8 15 42.6 15 31.5V18L32 11Z" stroke="#D6B571" stroke-width="2.6" stroke-linejoin="round" />
+                    <path d="M23 42L32 21L41 42" stroke="#D6B571" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M27.5 42L32 32.5L36.5 42" fill="#D6B571" />
+                  </svg>
+                  <span>TARJETA DIGITAL</span>
+                </div>
+                <Icons name="qr" size={22} />
+              </div>
 
-          <div class="contact-row">
-            <span class="contact-row-label">Correo electrónico</span>
-            <a href={`mailto:${SITE.contact.email}`} class="contact-row-value">
-              {SITE.contact.email}
-            </a>
-          </div>
+              <div class="metal-mid">
+                <Image
+                  src={abelPortrait}
+                  alt="Abel Díaz"
+                  width={120}
+                  height={120}
+                  class="metal-avatar"
+                />
+                <div>
+                  <strong>{SITE.name}</strong>
+                  <span>{SITE.role}</span>
+                </div>
+              </div>
 
-          <div class="contact-row">
-            <span class="contact-row-label">Redes sociales</span>
-            <div class="contact-socials">
-              <a
-                href={SITE.contact.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-pill"
-              >
-                <Icons name="instagram" size={16} />
-                <span>@{SITE.contact.instagramHandle}</span>
-                <Icons name="arrow-up-right" size={14} />
-              </a>
-
-              <a
-                href={SITE.contact.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-pill"
-              >
-                <Icons name="linkedin" size={16} />
-                <span>LinkedIn</span>
-                <Icons name="arrow-up-right" size={14} />
-              </a>
+              <div class="metal-bottom">
+                <span>{SITE.contact.phoneDisplay}</span>
+                <span class="metal-open">Abrir tarjeta + QR →</span>
+              </div>
             </div>
-          </div>
-
-          <div class="contact-row contact-row--last">
-            <span class="contact-row-label">Para compartir rápido</span>
-            <a href="/tarjeta" class="tarjeta-link">
-              <Icons name="qr" size={16} />
-              <span>Abrir tarjeta digital y código QR</span>
-              <Icons name="arrow-right" size={15} />
-            </a>
-          </div>
-        </aside>
+          </a>
+        </div>
       </div>
     </section>
   </main>
@@ -316,530 +473,1219 @@ import { SITE, buildWhatsAppUrl } from '../data/site';
 </BaseLayout>
 
 <style>
-  /* ================= HERO ================= */
+  /* ================= 1. HERO MONUMENTAL ================= */
   .hero {
-    padding-block: clamp(2.5rem, 5.5vw, 5rem) clamp(3.5rem, 6vw, 5.5rem);
+    padding-top: clamp(6.75rem, 11vw, 9rem);
+    background-color: var(--bg-chalk);
   }
 
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    gap: clamp(2.25rem, 5vw, 4.5rem);
+  .hero-top {
+    padding-bottom: clamp(2.25rem, 4.5vw, 3.75rem);
+  }
+
+  .hero-meta-row {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
   }
 
-  .hero-role {
-    font-size: 0.925rem;
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.42rem 0.9rem;
+    border-radius: 999px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #16a34a;
+  }
+
+  .hero-loc {
+    font-size: 0.85rem;
     font-weight: 500;
-    color: var(--brass);
-    margin-bottom: 1.1rem;
+    color: var(--ink-muted);
+  }
+
+  .hero-title {
+    font-size: clamp(2.85rem, 7vw, 6.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: 700;
+    color: var(--ink-primary);
+    max-width: 17ch;
+  }
+
+  .hero-title .serif-accent {
+    font-size: 1.07em;
+    font-weight: 400;
+    color: var(--ink-primary);
+  }
+
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+  }
+
+  .line-inner {
+    display: block;
+  }
+
+  .hero-bottom-row {
+    margin-top: clamp(2rem, 4vw, 3.25rem);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.75rem 2.5rem;
   }
 
   .hero-lead {
-    margin-top: 1.5rem;
-    color: var(--ink-body);
-    max-width: 54ch;
+    font-size: clamp(1.04rem, 1.35vw, 1.2rem);
+    line-height: 1.65;
+    color: var(--ink-secondary);
+    max-width: 48ch;
   }
 
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.85rem;
-    margin-top: 2rem;
+    gap: 0.75rem;
   }
 
-  .hero-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.55rem 0.75rem;
-    margin-top: 2rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border-hairline);
-    font-size: 0.875rem;
-    color: var(--ink-muted);
+  /* Lienzo expandible */
+  .hero-stage-outer {
+    padding-inline: clamp(0.75rem, 2.6vw, 2.5rem);
+    padding-bottom: clamp(2rem, 4vw, 4rem);
   }
 
-  .meta-sep {
-    color: var(--border-strong);
-  }
-
-  .meta-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--ink-navy);
-    font-weight: 500;
-    transition: color var(--duration-fast) ease;
-  }
-
-  .meta-link:hover {
-    color: var(--brass);
-  }
-
-  .hero-figure {
-    margin: 0;
-  }
-
-  .portrait-frame {
+  .hero-stage {
     position: relative;
-    aspect-ratio: 4 / 4.7;
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    height: clamp(360px, 66vh, 680px);
+    border-radius: 28px;
     overflow: hidden;
-    border-radius: var(--radius-sm);
-    background-color: var(--bg-linen);
-    border: 1px solid var(--border-hairline);
+    background: var(--bg-obsidian);
+    box-shadow: 0 32px 80px rgba(9, 12, 18, 0.16);
+    will-change: transform, border-radius;
   }
 
-  .portrait-img {
+  .hero-stage-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 18%;
+    transform: scale(1.06);
+    will-change: transform;
   }
 
-  .portrait-caption {
+  .hero-stage-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(9, 12, 18, 0.04) 20%,
+      rgba(9, 12, 18, 0.56) 100%
+    );
+  }
+
+  .hero-stage-hud {
+    position: absolute;
+    left: clamp(1.15rem, 3vw, 2.5rem);
+    right: clamp(1.15rem, 3vw, 2.5rem);
+    bottom: clamp(1.15rem, 3vw, 2.25rem);
     display: flex;
+    align-items: flex-end;
     justify-content: space-between;
-    align-items: baseline;
     gap: 1rem;
-    margin-top: 0.75rem;
-    font-size: 0.825rem;
-    color: var(--ink-muted);
+    z-index: 2;
   }
 
-  .caption-phone {
-    font-variant-numeric: tabular-nums;
-    color: var(--ink-navy);
-    font-weight: 500;
+  .advisor-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.55rem 1.1rem 0.55rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    color: var(--ink-primary);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
   }
 
-  /* ================= CREDENTIALS & INSURERS ================= */
-  .credentials-band {
-    border-top: 1px solid var(--border-hairline);
-    border-bottom: 1px solid var(--border-hairline);
-    background-color: var(--bg-card);
-    padding-block: 2rem;
+  .advisor-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 15%;
+    flex-shrink: 0;
   }
 
-  .credentials-row {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem 2.5rem;
-    padding-bottom: 1.75rem;
-    border-bottom: 1px solid var(--border-hairline);
+  .advisor-pill strong {
+    display: block;
+    font-size: 0.9rem;
+    line-height: 1.15;
   }
 
-  .credential-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  .advisor-pill span {
+    font-size: 0.78rem;
+    color: var(--ink-secondary);
   }
 
-  .credential-label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--ink-muted);
-  }
-
-  .credential-value {
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
-    color: var(--ink-navy);
-  }
-
-  .insurers-strip {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.9rem 2rem;
-    padding-top: 1.45rem;
-  }
-
-  .insurers-note {
+  .scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: rgba(255, 255, 255, 0.9);
     font-size: 0.82rem;
-    color: var(--ink-muted);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
-  .insurers-list {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1.75rem;
+  .scroll-line {
+    width: 34px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.7);
   }
 
-  .insurer-name {
-    font-family: var(--font-serif);
-    font-size: 1.02rem;
-    color: var(--ink-body);
-    opacity: 0.86;
+  /* ================= 2. MANIFIESTO ILUMINADO ================= */
+  .manifesto-section {
+    padding-block: clamp(5rem, 11vw, 9.5rem);
+    background: var(--bg-chalk);
   }
 
-  /* ================= ABOUT ================= */
+  .manifesto-text {
+    margin-top: 1.75rem;
+    font-size: clamp(1.85rem, 4vw, 3.65rem);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+    color: var(--ink-primary);
+    max-width: 28ch;
+  }
+
+  .m-word {
+    display: inline;
+    opacity: 0.16;
+    transition: opacity 0.15s linear;
+  }
+
+  /* ================= 3. STICKY SPLIT ACERCA ================= */
+  .about-section {
+    padding-top: clamp(2rem, 5vw, 4rem);
+    padding-bottom: clamp(4rem, 7vw, 6.5rem);
+    background: var(--bg-chalk);
+  }
+
   .about-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+    gap: clamp(2.5rem, 6vw, 5.5rem);
     align-items: start;
   }
 
-  .about-paragraph {
-    font-size: 1.0625rem;
+  .about-sticky {
+    position: sticky;
+    top: 102px;
+  }
+
+  .portrait-card {
+    position: relative;
+    border-radius: 26px;
+    overflow: hidden;
+    aspect-ratio: 4 / 4.85;
+    background: var(--bg-obsidian);
+    box-shadow: 0 28px 65px rgba(9, 12, 18, 0.14);
+  }
+
+  .portrait-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+
+  .portrait-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(9, 12, 18, 0.86) 100%);
+  }
+
+  .portrait-overlay {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    color: #ffffff;
+  }
+
+  .portrait-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .portrait-sub {
+    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .cedula-pill {
+    padding: 0.36rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(214, 181, 113, 0.2);
+    border: 1px solid rgba(214, 181, 113, 0.5);
+    color: #f4dca6;
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .about-content h2 {
+    margin-top: 1.15rem;
+    font-size: clamp(2rem, 3.8vw, 3.35rem);
+    line-height: 1.08;
+  }
+
+  .about-content h2 .serif-accent {
+    font-size: 1.08em;
+  }
+
+  .about-intro {
+    margin-top: 1.35rem;
+    font-size: 1.075rem;
     line-height: 1.75;
-    color: var(--ink-body);
-    margin-bottom: 1.35rem;
+    color: var(--ink-secondary);
+    max-width: 56ch;
   }
 
-  .principles-list {
+  .principles-stack {
     margin-top: 2.5rem;
-    border-top: 1px solid var(--border-hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  .principle-item {
-    padding-block: 1.35rem;
-    border-bottom: 1px solid var(--border-hairline);
+  .principle-card {
     display: grid;
-    grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
-    gap: 0.75rem 1.75rem;
-    align-items: baseline;
+    grid-template-columns: 44px 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.5rem 1.65rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 8px 24px rgba(9, 12, 18, 0.04);
   }
 
-  .principle-item h3 {
-    font-size: 1.18rem;
-    color: var(--ink-navy);
+  .p-index {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gold);
+    padding-top: 0.2rem;
   }
 
-  .principle-item p {
-    font-size: 0.95rem;
-    color: var(--ink-muted);
+  .principle-card h3 {
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+  }
+
+  .principle-card p {
+    font-size: 0.94rem;
     line-height: 1.6;
+    color: var(--ink-secondary);
   }
 
-  /* ================= SECTION INTRO ================= */
-  .section-intro {
-    max-width: 680px;
-    margin-bottom: clamp(2.5rem, 5vw, 3.75rem);
+  .credentials-grid {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 
-  .section-intro .lead {
-    margin-top: 1rem;
+  .cred-box {
+    padding: 1.15rem 1.35rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-travertine);
+  }
+
+  .cred-box span {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
     color: var(--ink-muted);
   }
 
-  /* ================= SERVICES LEDGER ================= */
-  .services-ledger {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 1px solid var(--border-strong);
+  .cred-box strong {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.96rem;
+    color: var(--ink-primary);
   }
 
-  .service-entry {
+  /* Marquee sutil de aseguradoras */
+  .insurers-marquee-wrap {
+    margin-top: clamp(4rem, 7vw, 6.5rem);
+    padding-top: 2.25rem;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .insurers-caption {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .marquee-viewport {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    gap: 2.5rem;
+    animation: marqueeScroll 36s linear infinite;
+  }
+
+  .marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2.5rem;
+    font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: rgba(11, 17, 28, 0.42);
+    white-space: nowrap;
+  }
+
+  .marquee-sep {
+    font-size: 0.75rem;
+    color: var(--gold);
+  }
+
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
+  }
+
+  /* ================= 4. SERVICIOS OBSIDIANA + CURSOR PREVIEW ================= */
+  .services-obsidian {
+    position: relative;
+    background: var(--bg-obsidian);
+    color: var(--ink-on-dark);
+    padding-block: clamp(5.5rem, 10vw, 9rem);
+    overflow: clip;
+  }
+
+  .obsidian-glow {
+    position: absolute;
+    top: -180px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 960px;
+    height: 480px;
+    background: radial-gradient(ellipse, rgba(214, 181, 113, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .services-inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  .eyebrow-gold {
+    color: var(--gold-bright);
+  }
+
+  .services-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.75rem 3rem;
+    margin-bottom: clamp(3rem, 6vw, 4.75rem);
+  }
+
+  .services-head h2 {
+    margin-top: 1rem;
+    color: var(--ink-on-dark);
+    font-size: clamp(2.25rem, 4.6vw, 4rem);
+    line-height: 1.05;
+    max-width: 17ch;
+  }
+
+  .services-head h2 .serif-accent {
+    font-size: 1.08em;
+    color: var(--gold-bright);
+  }
+
+  .services-sub {
+    color: var(--ink-on-dark-muted);
+    max-width: 38ch;
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+
+  .services-list {
+    border-top: 1px solid var(--border-dark);
+  }
+
+  .service-row {
+    position: relative;
+    border-bottom: 1px solid var(--border-dark);
+    padding-block: clamp(1.65rem, 3vw, 2.5rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem 2.5rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .service-row:hover {
+    border-bottom-color: rgba(214, 181, 113, 0.45);
+  }
+
+  .service-row-main {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 1rem 2rem;
+    flex: 1;
+    transition: transform 0.35s var(--ease-out-expo);
+  }
+
+  .service-row:hover .service-row-main {
+    transform: translateX(8px);
+  }
+
+  .s-num {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gold-bright);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .s-cat {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink-on-dark-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .s-text h3 {
+    color: #ffffff;
+    font-size: clamp(1.45rem, 2.7vw, 2.35rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    transition: color 0.25s ease;
+  }
+
+  .service-row:hover .s-text h3 {
+    color: var(--gold-bright);
+  }
+
+  .s-text p {
+    margin-top: 0.45rem;
+    font-size: 0.94rem;
+    color: var(--ink-on-dark-muted);
+    max-width: 58ch;
+  }
+
+  .s-arrow {
+    color: var(--ink-on-dark-muted);
+    transition: transform 0.3s var(--ease-out-expo), color 0.25s ease;
+  }
+
+  .service-row:hover .s-arrow {
+    color: var(--gold-bright);
+    transform: translate(4px, -4px);
+  }
+
+  .service-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .s-detail-link {
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: var(--ink-on-dark-muted);
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-dark);
+    transition: all 0.2s ease;
+  }
+
+  .s-detail-link:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .s-wa-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.52rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(214, 181, 113, 0.14);
+    border: 1px solid rgba(214, 181, 113, 0.35);
+    color: #f4dca6;
+    font-size: 0.84rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .s-wa-pill:hover {
+    background: var(--gold-bright);
+    color: var(--bg-obsidian);
+  }
+
+  /* Preview fotográfico flotante */
+  .hover-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 310px;
+    height: 220px;
+    border-radius: 18px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 30;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.84);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 28px 65px rgba(0, 0, 0, 0.55);
+    will-change: transform, opacity;
+  }
+
+  .hover-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ================= 5. STICKY STACKING PROCESS CARDS ================= */
+  .process-section {
+    padding-block: clamp(5rem, 9vw, 8.5rem);
+    background: var(--bg-chalk);
+  }
+
+  .process-head {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .process-head h2 {
+    margin-top: 1rem;
+    font-size: clamp(2.1rem, 4.2vw, 3.6rem);
+    line-height: 1.06;
+  }
+
+  .process-head h2 .serif-accent {
+    font-size: 1.08em;
+  }
+
+  .stack-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .stack-card {
+    position: sticky;
+    top: calc(96px + var(--stack-idx) * 22px);
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border-radius: 28px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 22px 55px rgba(9, 12, 18, 0.08);
+    transform-origin: top center;
+    will-change: transform;
+  }
+
+  .stack-step {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .stack-card-copy h3 {
+    font-size: clamp(1.65rem, 2.8vw, 2.4rem);
+    line-height: 1.12;
+  }
+
+  .stack-card-copy p {
+    margin-top: 1rem;
+    font-size: 1.04rem;
+    line-height: 1.7;
+    color: var(--ink-secondary);
+    max-width: 44ch;
+  }
+
+  .stack-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1.75rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    padding-bottom: 3px;
+    border-bottom: 1.5px solid var(--ink-primary);
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .stack-cta:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .stack-card-media {
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 16 / 11;
+    background: var(--bg-travertine);
+  }
+
+  .stack-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ================= 6. TESTIMONIOS ================= */
+  .testimonials-section {
+    padding-block: clamp(4.5rem, 8vw, 7.5rem);
+    background: var(--bg-travertine);
+  }
+
+  .test-head {
+    margin-bottom: 2.75rem;
+  }
+
+  .test-head h2 {
+    margin-top: 0.9rem;
+    font-size: clamp(1.9rem, 3.5vw, 3rem);
+    max-width: 22ch;
+    line-height: 1.1;
+  }
+
+  .test-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .test-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: 22px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 1.75rem;
-    padding: 2.25rem 2.25rem 2.25rem 0;
-    border-bottom: 1px solid var(--border-hairline);
+    box-shadow: 0 12px 32px rgba(9, 12, 18, 0.05);
   }
 
-  .service-entry:nth-child(even) {
-    padding-left: 2.5rem;
-    padding-right: 0;
-    border-left: 1px solid var(--border-hairline);
-  }
-
-  .service-category {
-    display: inline-block;
-    font-size: 0.82rem;
+  .test-quote {
+    font-size: 1.04rem;
+    line-height: 1.65;
+    color: var(--ink-primary);
     font-weight: 500;
-    color: var(--brass);
-    margin-bottom: 0.55rem;
   }
 
-  .service-title-link {
-    transition: color var(--duration-fast) ease;
-  }
-
-  .service-title-link:hover {
-    color: var(--brass);
-  }
-
-  .service-summary {
-    margin-top: 0.75rem;
-    font-size: 0.975rem;
-    line-height: 1.68;
-    color: var(--ink-muted);
-  }
-
-  .service-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .service-wa-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--whatsapp);
-    padding: 0.35rem 0.65rem;
-    border-radius: var(--radius-sm);
-    transition: background-color var(--duration-fast) ease;
-  }
-
-  .service-wa-link:hover {
-    background-color: rgba(31, 110, 67, 0.09);
-  }
-
-  /* ================= PROCESS ================= */
-  .process-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2.25rem;
-  }
-
-  .process-step {
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-strong);
-  }
-
-  .step-label {
-    display: block;
-    font-size: 0.825rem;
-    font-weight: 500;
-    color: var(--brass);
-    margin-bottom: 0.65rem;
-  }
-
-  .process-step h3 {
-    margin-bottom: 0.75rem;
-  }
-
-  .process-step p {
-    font-size: 0.96rem;
-    line-height: 1.68;
-    color: var(--ink-muted);
-  }
-
-  /* ================= TESTIMONIALS ================= */
-  .testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2rem;
-  }
-
-  .testimonial-quote {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding: 1.85rem;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-sm);
-  }
-
-  .quote-text {
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
-    line-height: 1.6;
-    color: var(--ink-navy);
-  }
-
-  .quote-footer {
+  .test-footer {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-hairline);
   }
 
-  .quote-author {
+  .test-footer cite {
     font-style: normal;
+    font-weight: 700;
     font-size: 0.92rem;
-    font-weight: 600;
-    color: var(--ink-navy);
+    color: var(--ink-primary);
   }
 
-  .quote-context {
-    font-size: 0.825rem;
-    color: var(--ink-muted);
-  }
-
-  .placeholder-footnote {
-    margin-top: 1.5rem;
+  .test-footer span {
     font-size: 0.82rem;
     color: var(--ink-muted);
-    max-width: none;
   }
 
-  /* ================= CONTACT BAND ================= */
-  .contact-grid {
+  .test-note {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+  }
+
+  /* ================= 7. CONTACTO MONUMENTAL + TARJETA 3D ================= */
+  .contact-finale {
+    position: relative;
+    background: var(--bg-obsidian);
+    color: var(--ink-on-dark);
+    padding-block: clamp(5.5rem, 10vw, 9rem);
+    overflow: hidden;
+  }
+
+  .finale-glow {
+    position: absolute;
+    bottom: -240px;
+    right: -120px;
+    width: 720px;
+    height: 720px;
+    background: radial-gradient(circle, rgba(214, 181, 113, 0.16) 0%, transparent 68%);
+    pointer-events: none;
+  }
+
+  .finale-grid {
+    position: relative;
+    z-index: 2;
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: clamp(2.25rem, 5vw, 4.5rem);
-    align-items: start;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
   }
 
-  .contact-lead {
-    margin-top: 1.25rem;
-    font-size: 1.0625rem;
+  .finale-title {
+    margin-top: 1rem;
+    color: #ffffff;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+
+  .finale-title .serif-accent {
+    font-size: 1.08em;
+    color: var(--gold-bright);
+  }
+
+  .finale-lead {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
     line-height: 1.7;
     color: var(--ink-on-dark-muted);
-    max-width: 52ch;
+    max-width: 48ch;
   }
 
-  .contact-buttons {
+  .finale-ctas {
     display: flex;
     flex-wrap: wrap;
     gap: 0.85rem;
-    margin-top: 2rem;
+    margin-top: 2.25rem;
   }
 
-  .contact-card {
-    background-color: var(--ink-navy-deep);
-    border: 1px solid var(--border-on-dark);
-    border-radius: var(--radius-sm);
-    padding: 1.75rem 2rem;
+  .finale-direct {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-dark);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.35rem 2rem;
   }
 
-  .contact-row {
-    padding-block: 1.05rem;
-    border-bottom: 1px solid var(--border-on-dark);
+  .direct-item {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.2rem;
+    transition: transform 0.2s ease;
   }
 
-  .contact-row--last {
-    border-bottom: none;
-    padding-bottom: 0.25rem;
+  .direct-item:hover {
+    transform: translateX(4px);
   }
 
-  .contact-row:first-child {
-    padding-top: 0.25rem;
-  }
-
-  .contact-row-label {
-    font-size: 0.8rem;
+  .direct-item span {
+    font-size: 0.78rem;
     color: var(--ink-on-dark-muted);
   }
 
-  .contact-row-value {
-    font-family: var(--font-serif);
-    font-size: 1.22rem;
-    color: var(--ink-on-dark);
-    transition: color var(--duration-fast) ease;
+  .direct-item strong {
+    font-size: 0.98rem;
+    color: #ffffff;
+    font-weight: 600;
     word-break: break-word;
   }
 
-  .contact-row-value:hover {
-    color: var(--brass-soft);
+  .direct-item:hover strong {
+    color: var(--gold-bright);
   }
 
-  .contact-socials {
+  /* Tarjeta metálica 3D */
+  .metal-card-scene {
+    display: block;
+    perspective: 1100px;
+  }
+
+  .metal-card {
+    position: relative;
+    aspect-ratio: 1.58 / 1;
+    border-radius: 24px;
+    padding: 1.85rem;
+    background: linear-gradient(135deg, #171e2c 0%, #0b0f17 52%, #151c29 100%);
+    border: 1px solid rgba(214, 181, 113, 0.34);
+    box-shadow:
+      0 32px 75px rgba(0, 0, 0, 0.65),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 0.25rem;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.22s ease-out;
   }
 
-  .social-pill {
+  .metal-sheen {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at var(--mx, 50%) var(--my, 30%),
+      rgba(214, 181, 113, 0.22) 0%,
+      transparent 55%
+    );
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .metal-top,
+  .metal-mid,
+  .metal-bottom {
+    position: relative;
+    z-index: 2;
+  }
+
+  .metal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--gold-bright);
+  }
+
+  .metal-logo {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.5rem 0.85rem;
-    border: 1px solid var(--border-on-dark);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-    color: var(--ink-on-dark);
-    transition:
-      border-color var(--duration-fast) ease,
-      color var(--duration-fast) ease;
+    gap: 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
   }
 
-  .social-pill:hover {
-    border-color: var(--brass-soft);
-    color: var(--brass-soft);
-  }
-
-  .tarjeta-link {
-    display: inline-flex;
+  .metal-mid {
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.2rem;
-    font-size: 0.925rem;
-    font-weight: 500;
-    color: var(--brass-soft);
-    transition: opacity var(--duration-fast) ease;
+    gap: 1rem;
   }
 
-  .tarjeta-link:hover {
-    opacity: 0.85;
+  .metal-avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 15%;
+    border: 2px solid rgba(214, 181, 113, 0.65);
+    flex-shrink: 0;
+  }
+
+  .metal-mid strong {
+    display: block;
+    font-size: 1.35rem;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+
+  .metal-mid span {
+    font-size: 0.85rem;
+    color: var(--ink-on-dark-muted);
+  }
+
+  .metal-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.84rem;
+    color: var(--ink-on-dark-muted);
+  }
+
+  .metal-open {
+    color: var(--gold-bright);
+    font-weight: 600;
   }
 
   /* ================= RESPONSIVE ================= */
-  @media (max-width: 960px) {
-    .hero-grid,
+  @media (max-width: 1024px) {
     .about-grid,
-    .contact-grid {
+    .finale-grid,
+    .stack-card {
       grid-template-columns: 1fr;
     }
 
-    .hero-figure {
-      max-width: 460px;
+    .about-sticky {
+      position: static;
+      max-width: 480px;
     }
 
-    .credentials-row,
-    .process-grid,
-    .testimonials-grid {
+    .hover-preview {
+      display: none;
+    }
+
+    .service-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .service-row-main {
+      width: 100%;
+      grid-template-columns: 36px 1fr auto;
+      gap: 0.75rem 1rem;
+    }
+
+    .test-grid {
       grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .services-ledger {
-      grid-template-columns: 1fr;
-    }
-
-    .service-entry,
-    .service-entry:nth-child(even) {
-      padding: 1.85rem 0;
-      border-left: none;
     }
   }
 
   @media (max-width: 640px) {
-    .meta-sep {
+    .hero-stage {
+      height: 360px;
+      border-radius: 20px;
+    }
+
+    .scroll-cue {
       display: none;
     }
 
-    .hero-meta {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .principle-item {
-      grid-template-columns: 1fr;
-      gap: 0.35rem;
-    }
-
     .hero-actions .btn,
-    .contact-buttons .btn {
+    .finale-ctas .btn {
       width: 100%;
     }
 
-    .portrait-caption {
-      flex-direction: column;
-      gap: 0.2rem;
+    .credentials-grid,
+    .finale-direct {
+      grid-template-columns: 1fr;
     }
 
-    .contact-card {
-      padding: 1.35rem;
+    .stack-card {
+      position: static;
+    }
+
+    .metal-card {
+      aspect-ratio: auto;
+      gap: 1.5rem;
     }
   }
 </style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  if (!reduced) {
+    // 1. Hero masked split-line entrance
+    gsap.from('.js-hero-line', {
+      yPercent: 115,
+      duration: 1.05,
+      ease: 'power4.out',
+      stagger: 0.12,
+    });
+
+    gsap.from('.js-hero-fade', {
+      opacity: 0,
+      y: 20,
+      duration: 0.85,
+      delay: 0.25,
+      ease: 'power3.out',
+      stagger: 0.1,
+    });
+
+    // 2. Hero stage cinema scroll expansion + parallax
+    const heroStage = document.getElementById('heroStage');
+    const heroStageImg = document.getElementById('heroStageImg');
+    if (heroStage && heroStageImg) {
+      gsap.to(heroStage, {
+        borderRadius: '0px',
+        maxWidth: '100%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#heroStageOuter',
+          start: 'top 80%',
+          end: 'top 10%',
+          scrub: true,
+        },
+      });
+
+      gsap.to(heroStageImg, {
+        scale: 1,
+        yPercent: 6,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#heroStageOuter',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    }
+
+    // 3. Word-by-word scroll-illuminated manifesto
+    const words = document.querySelectorAll('#manifestoText .m-word');
+    if (words.length > 0) {
+      gsap.to(words, {
+        opacity: 1,
+        stagger: 0.08,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#manifestoText',
+          start: 'top 80%',
+          end: 'bottom 45%',
+          scrub: 0.6,
+        },
+      });
+    }
+
+    // 4. Reveal cards smoothly on scroll
+    document.querySelectorAll<HTMLElement>('.js-reveal-up').forEach((el) => {
+      gsap.from(el, {
+        opacity: 0,
+        y: 28,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 86%',
+          once: true,
+        },
+      });
+    });
+
+    // 5. Sticky stacking card subtle depth scale-down
+    const stackCards = gsap.utils.toArray<HTMLElement>('.js-stack-card');
+    if (window.innerWidth > 640 && stackCards.length > 1) {
+      stackCards.forEach((card, i) => {
+        if (i === stackCards.length - 1) return;
+        gsap.to(card, {
+          scale: 0.94,
+          opacity: 0.72,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: stackCards[i + 1],
+            start: 'top 75%',
+            end: 'top 25%',
+            scrub: true,
+          },
+        });
+      });
+    }
+  } else {
+    document.querySelectorAll<HTMLElement>('.m-word').forEach((w) => {
+      w.style.opacity = '1';
+    });
+  }
+
+  // 6. Desktop Awwwards Cursor-Following Service Photo Preview
+  if (isDesktop && !reduced) {
+    const preview = document.getElementById('hoverPreview');
+    const previewImg = document.getElementById('hoverPreviewImg') as HTMLImageElement | null;
+    const rows = document.querySelectorAll<HTMLElement>('.service-row');
+
+    if (preview && previewImg && rows.length > 0) {
+      const moveX = gsap.quickTo(preview, 'x', { duration: 0.38, ease: 'power3.out' });
+      const moveY = gsap.quickTo(preview, 'y', { duration: 0.38, ease: 'power3.out' });
+      let lastX = 0;
+
+      rows.forEach((row) => {
+        row.addEventListener('mouseenter', () => {
+          const src = row.dataset.previewImg;
+          if (src) previewImg.src = src;
+          gsap.to(preview, { opacity: 1, scale: 1, duration: 0.3, ease: 'power3.out' });
+        });
+
+        row.addEventListener('mousemove', (e) => {
+          const vx = Math.max(-10, Math.min(10, (e.clientX - lastX) * 0.45));
+          lastX = e.clientX;
+          moveX(e.clientX + 26);
+          moveY(e.clientY - 12);
+          gsap.to(preview, { rotation: vx * 0.45, duration: 0.35, ease: 'power2.out' });
+        });
+
+        row.addEventListener('mouseleave', () => {
+          gsap.to(preview, { opacity: 0, scale: 0.84, rotation: 0, duration: 0.25, ease: 'power2.in' });
+        });
+      });
+    }
+
+    // 7. Subtle magnetic buttons
+    document.querySelectorAll<HTMLElement>('.js-magnetic').forEach((btn) => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const dx = (e.clientX - (rect.left + rect.width / 2)) * 0.16;
+        const dy = (e.clientY - (rect.top + rect.height / 2)) * 0.2;
+        gsap.to(btn, { x: dx, y: dy, duration: 0.3, ease: 'power2.out' });
+      });
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+      });
+    });
+
+    // 8. 3D-Tilt Metallic Digital Card
+    const card = document.getElementById('metalCard');
+    const sheen = document.getElementById('metalSheen');
+    if (card && sheen) {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        const rx = (0.5 - py) * 14;
+        const ry = (px - 0.5) * 16;
+        card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+        sheen.style.setProperty('--mx', `${px * 100}%`);
+        sheen.style.setProperty('--my', `${py * 100}%`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      });
+    }
+  }
+</script>
